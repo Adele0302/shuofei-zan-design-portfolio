@@ -8,6 +8,14 @@ A curated selection of design and research work spanning **computational design*
 
 > **Viewing note:** The portfolio is hosted on Figma. The interactive viewer may take some time to load, especially on the first visit or with a slower connection. Thank you for your patience.
 
+## Selected research
+
+### [Sky-Green Glaze Across Four Kilns of the Northern Song Ru-Kiln System →](research/ru-kiln-sky-green-porcelain/README.md)
+
+Co-authored ceramic materials and archaeometry research investigating how glaze composition, iron valence, crystalline phases, and microstructure relate to color differences across four Northern Song Ru-system kilns.
+
+**Publication:** *Open Ceramics*, 23 (2025), 100821 · [DOI](https://doi.org/10.1016/j.oceram.2025.100821)
+
 ## About this repository
 
 This repository provides a dedicated public entry point to my design and research portfolio. The complete visual presentation is available through the Figma prototype link above. The portfolio is intended for academic and research review.
