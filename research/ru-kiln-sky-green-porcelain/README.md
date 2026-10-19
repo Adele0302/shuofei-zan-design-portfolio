@@ -67,6 +67,8 @@ Differences in the Fe²⁺/Fe³⁺ ratio and P₂O₅ content were associated wi
 
 Sang, Z., **Zan, S.**, Li, L., Fu, X., Liu, Z., Chen, D., Yuan, X., & Shi, P. (2025). Comparative study on the color characteristics of sky-green porcelain in the four kilns of a Ru kiln system from the Northern Song Dynasty. *Open Ceramics, 23*, 100821. [https://doi.org/10.1016/j.oceram.2025.100821](https://doi.org/10.1016/j.oceram.2025.100821)
 
+**Citation export:** [Download the BibTeX citation](citation.bib).
+
 ## Access and reuse
 
 The publisher's article is open access under the **Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)** license. Please consult the [license terms](https://creativecommons.org/licenses/by-nc-nd/4.0/) before redistributing or reusing the article.
