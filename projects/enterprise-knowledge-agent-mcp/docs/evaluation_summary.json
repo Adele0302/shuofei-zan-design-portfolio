@@ -1,0 +1,9 @@
+{
+  "cases": 10,
+  "passed": 10,
+  "hit_rate": 1.0,
+  "dataset": "synthetic",
+  "metric": "source hit@k + empty-result check",
+  "run_date": "2026-10-21",
+  "note": "Synthetic only; no LLM generated answer accuracy was measured."
+}

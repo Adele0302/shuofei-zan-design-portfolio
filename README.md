@@ -16,6 +16,12 @@ Co-authored ceramic materials and archaeometry research investigating how glaze 
 
 **Publication:** *Open Ceramics*, 23 (2025), 100821 · [DOI](https://doi.org/10.1016/j.oceram.2025.100821)
 
+## AI & Engineering demos
+
+### [Enterprise Procurement Knowledge Agent · MCP · RAG →](projects/enterprise-knowledge-agent-mcp/README.md)
+
+AI-assisted FDE proof of concept using **synthetic procurement data**. Includes document ingest, citation-based lexical retrieval, an agent calling a standalone MCP stdio tool server, an approval-gated ticket workflow and reproducible tests. Not a production deployment; see the project README for limitations and authorship disclosure.
+
 ## About this repository
 
 This repository provides a dedicated public entry point to my design and research portfolio. The complete visual presentation is available through the Figma prototype link above. The portfolio is intended for academic and research review.
