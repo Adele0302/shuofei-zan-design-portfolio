@@ -1,7 +1,7 @@
-"""Database, retrieval, ingestion, and procurement-tool domain logic.
+"""Tenant-scoped SQLite document store, lexical retrieval and gated ticket lifecycle.
 
-All supplied documents are untrusted reference data. The only side effects are
-local SQLite draft and approval records; no email, payment, or purchase is sent.
+This is a local portfolio proof of concept. Records and approvals are never
+connected to actual purchase ordering systems.
 """
 from __future__ import annotations
 
@@ -11,14 +11,13 @@ import math
 import os
 import re
 import sqlite3
-import time
 import uuid
 from collections import Counter
-from dataclasses import dataclass
+from io import BytesIO
 from pathlib import Path
 from typing import Any
 
-DB_DEFAULT = 'local_data/knowledge.sqlite3'
+DB_DEFAULT = 'local_data/knowledge_v2.sqlite3'
 ALLOWED_EXTENSIONS = {'.txt', '.md', '.pdf', '.docx'}
 MAX_FILE_BYTES = 8 * 1024 * 1024
 MAX_TEXT_CHARS = 1_000_000
@@ -27,8 +26,15 @@ STOPWORDS = {'and', 'the', 'is', 'of', 'to', 'a', 'in', 'with', 'for', 'what', '
              '请问', '什么', '如何', '请', '一下', '关于'}
 
 
+def workspace_id(workspace: str | None = None) -> str:
+    value = workspace if workspace is not None else os.getenv('FDE_WORKSPACE', 'demo')
+    if not re.fullmatch(r'[a-zA-Z0-9_-]{1,48}', value or ''):
+        raise ValueError('invalid workspace identifier')
+    return value
+
+
 def db_path() -> Path:
-    return Path(os.environ.get('APP_DB_PATH') or DB_DEFAULT)
+    return Path(os.getenv('APP_DB_PATH') or DB_DEFAULT)
 
 
 def connect() -> sqlite3.Connection:
@@ -45,66 +51,74 @@ def initialize() -> None:
     with connect() as c:
         c.executescript('''
         CREATE TABLE IF NOT EXISTS documents (
-          id TEXT PRIMARY KEY, filename TEXT NOT NULL, sha256 TEXT NOT NULL UNIQUE,
-          added_at TEXT NOT NULL DEFAULT (datetime('now')));
+          id TEXT PRIMARY KEY, workspace TEXT NOT NULL, filename TEXT NOT NULL,
+          sha256 TEXT NOT NULL, added_at TEXT NOT NULL DEFAULT (datetime('now')),
+          UNIQUE(workspace,sha256));
         CREATE TABLE IF NOT EXISTS chunks (
           id INTEGER PRIMARY KEY AUTOINCREMENT, document_id TEXT NOT NULL,
           ordinal INTEGER NOT NULL, text TEXT NOT NULL,
           FOREIGN KEY(document_id) REFERENCES documents(id) ON DELETE CASCADE);
+        CREATE TABLE IF NOT EXISTS chunk_vectors (
+          chunk_id INTEGER NOT NULL, model_id TEXT NOT NULL, dimension INTEGER NOT NULL,
+          vector BLOB NOT NULL, PRIMARY KEY (chunk_id,model_id),
+          FOREIGN KEY(chunk_id) REFERENCES chunks(id) ON DELETE CASCADE);
         CREATE TABLE IF NOT EXISTS tickets (
-          id TEXT PRIMARY KEY, title TEXT NOT NULL, reason TEXT NOT NULL,
-          source TEXT NOT NULL, status TEXT NOT NULL CHECK(status IN ('draft','approved')),
+          id TEXT PRIMARY KEY, workspace TEXT NOT NULL, title TEXT NOT NULL,
+          reason TEXT NOT NULL, source TEXT NOT NULL,
+          status TEXT NOT NULL CHECK(status IN ('draft','approved','rejected')),
           created_at TEXT NOT NULL DEFAULT (datetime('now')),
-          approved_by TEXT, approved_at TEXT);
+          reviewed_by TEXT, reviewed_at TEXT);
         CREATE TABLE IF NOT EXISTS audit (
-          id INTEGER PRIMARY KEY AUTOINCREMENT, trace_id TEXT NOT NULL,
-          action TEXT NOT NULL, detail TEXT NOT NULL,
+          id INTEGER PRIMARY KEY AUTOINCREMENT, workspace TEXT NOT NULL,
+          trace_id TEXT NOT NULL, action TEXT NOT NULL, detail TEXT NOT NULL,
           created_at TEXT NOT NULL DEFAULT (datetime('now')));
+        CREATE INDEX IF NOT EXISTS chunks_document_id ON chunks(document_id);
+        CREATE INDEX IF NOT EXISTS documents_workspace ON documents(workspace);
+        CREATE INDEX IF NOT EXISTS audit_workspace ON audit(workspace);
+        CREATE INDEX IF NOT EXISTS tickets_workspace ON tickets(workspace);
         ''')
+        # Fail loudly if an old demo DB is reused, rather than silently mixing schema.
+        fields = {r['name'] for r in c.execute('PRAGMA table_info(documents)')}
+        if 'workspace' not in fields:
+            raise RuntimeError('v1 SQLite schema detected; set APP_DB_PATH to a fresh v2 path')
 
 
-def audit(trace_id: str, action: str, data: dict[str, Any]) -> None:
+def audit(trace_id: str, action: str, data: dict[str, Any], workspace: str | None = None) -> None:
+    w = workspace_id(workspace)
     initialize()
     with connect() as c:
-        c.execute('INSERT INTO audit(trace_id, action, detail) VALUES (?,?,?)',
-                  (trace_id[:80], action[:80], json.dumps(data, ensure_ascii=False)[:4000]))
+        c.execute('INSERT INTO audit(workspace,trace_id,action,detail) VALUES (?,?,?,?)',
+                  (w, trace_id[:80], action[:80], json.dumps(data, ensure_ascii=False)[:4000]))
 
 
 def tokens(text: str) -> list[str]:
-    """Mixed Chinese-English lexical tokens; Chinese overlapping bigrams."""
     parts = re.findall(r'[\u3400-\u9fff]+|[a-zA-Z][a-zA-Z0-9_\-]*|\d+(?:\.\d+)?', text.lower())
-    out = []
+    out: list[str] = []
     for part in parts:
-        if re.fullmatch('[\u3400-\u9fff]+', part):
-            if len(part) == 1:
-                out.append(part)
-            else:
-                out.extend(part[i:i+2] for i in range(len(part)-1))
+        if re.fullmatch(r'[\u3400-\u9fff]+', part):
+            out.extend([part] if len(part) == 1 else [part[i:i+2] for i in range(len(part)-1)])
         elif part not in STOPWORDS and len(part) > 1:
             out.append(part)
     return out
 
 
 def chunk_text(text: str, size: int = 650, overlap: int = 90) -> list[str]:
-    """Char-based chunks, suitable for mixed CJK/English documents."""
-    text = re.sub(r'\r\n?', '\n', text).strip()
-    if not text:
-        return []
     if not 0 <= overlap < size:
-        raise ValueError('overlap must be >=0 and <size')
-    results, start = [], 0
+        raise ValueError('invalid chunk overlap')
+    text = re.sub(r'\r\n?', '\n', text).strip()
+    result, start = [], 0
     while start < len(text):
         end = min(len(text), start + size)
         if end < len(text):
-            pivot = max(text.rfind('\n', start + size // 2, end),
-                        text.rfind('。', start + size // 2, end))
+            pivot = max(text.rfind('\n', start + size//2, end),
+                        text.rfind('。', start + size//2, end))
             if pivot > start:
                 end = pivot + 1
-        results.append(text[start:end])
+        result.append(text[start:end])
         if end == len(text):
             break
         start = max(start+1, end-overlap)
-    return results
+    return result
 
 
 def read_document(filename: str, contents: bytes) -> str:
@@ -113,124 +127,194 @@ def read_document(filename: str, contents: bytes) -> str:
         raise ValueError('file type must be txt, md, pdf or docx')
     if len(contents) > MAX_FILE_BYTES:
         raise ValueError('file exceeds 8 MiB limit')
-    if suffix in {'.txt', '.md'}:
-        text = contents.decode('utf-8-sig')
-    elif suffix == '.pdf':
-        from io import BytesIO
-        from pypdf import PdfReader
-        text = '\n'.join(p.extract_text() or '' for p in PdfReader(BytesIO(contents)).pages)
-    else:
-        from io import BytesIO
-        from docx import Document
-        text = '\n'.join(p.text for p in Document(BytesIO(contents)).paragraphs)
+    try:
+        if suffix in {'.txt', '.md'}:
+            text = contents.decode('utf-8-sig')
+        elif suffix == '.pdf':
+            from pypdf import PdfReader
+            reader = PdfReader(BytesIO(contents))
+            if len(reader.pages) > 150:
+                raise ValueError('PDF exceeds 150-page limit')
+            text = '\n'.join(p.extract_text() or '' for p in reader.pages)
+        else:
+            from docx import Document
+            document = Document(BytesIO(contents))
+            text = '\n'.join([*(p.text for p in document.paragraphs),
+                              *(cell.text for t in document.tables for row in t.rows for cell in row.cells)])
+    except (UnicodeError, ValueError):
+        raise
+    except Exception as e:
+        raise ValueError('unsupported, encrypted or malformed document') from e
     if len(text) > MAX_TEXT_CHARS:
-        raise ValueError('parsed text too large')
+        raise ValueError('parsed text exceeds character limit')
     if not text.strip():
         raise ValueError('document contains no extractable text')
     return text
 
 
-def add_document(filename: str, contents: bytes) -> dict[str, Any]:
-    initialize()
-    safe = Path(filename.replace('\\', '/')).name[:180]
+def _safe_filename(name: str) -> str:
+    name = Path(name.replace('\\','/')).name[:120]
+    name = re.sub(r'[\[\]#\x00-\x1f]', '_', name)
+    if not name or name.startswith('.') or Path(name).suffix.lower() not in ALLOWED_EXTENSIONS:
+        raise ValueError('invalid filename or extension')
+    return name
+
+
+def add_document(filename: str, contents: bytes, workspace: str | None = None) -> dict[str,Any]:
+    w = workspace_id(workspace)
+    safe = _safe_filename(filename)
     text = read_document(safe, contents)
     digest = hashlib.sha256(contents).hexdigest()
-    docid = digest[:16]
+    docid = hashlib.sha256((w+':'+digest).encode()).hexdigest()[:20]
+    initialize()
+    chunks = chunk_text(text)
     with connect() as c:
-        if c.execute('SELECT id FROM documents WHERE sha256=?', (digest,)).fetchone():
-            return {'document_id': docid, 'filename': safe, 'duplicate': True, 'chunks': 0}
-        c.execute('INSERT INTO documents(id,filename,sha256) VALUES (?,?,?)', (docid, safe, digest))
-        items = chunk_text(text)
-        c.executemany('INSERT INTO chunks(document_id,ordinal,text) VALUES (?,?,?)',
-                      [(docid, i+1, chunk) for i, chunk in enumerate(items)])
-    return {'document_id': docid, 'filename': safe, 'duplicate': False, 'chunks': len(items)}
+        if c.execute('SELECT id FROM documents WHERE workspace=? AND sha256=?',(w,digest)).fetchone():
+            return {'document_id':docid,'filename':safe,'duplicate':True,'chunks':0,'workspace':w}
+        c.execute('INSERT INTO documents(id,workspace,filename,sha256) VALUES(?,?,?,?)',(docid,w,safe,digest))
+        c.executemany('INSERT INTO chunks(document_id,ordinal,text) VALUES(?,?,?)',
+                      [(docid,i+1,item) for i,item in enumerate(chunks)])
+    from app.semantic import index_document
+    status = index_document(docid, w)   # explicit status if embedding provider is unavailable
+    return {'document_id':docid,'filename':safe,'duplicate':False,'chunks':len(chunks),
+            'workspace':w,'vector_index':status}
 
 
-def list_documents() -> list[dict[str, Any]]:
+def list_documents(workspace: str | None = None) -> list[dict[str,Any]]:
+    w = workspace_id(workspace)
     initialize()
     with connect() as c:
-        return [dict(row) for row in c.execute(
+        return [dict(r) for r in c.execute(
             'SELECT d.id,d.filename,d.added_at,COUNT(c.id) AS chunks '
             'FROM documents d LEFT JOIN chunks c ON c.document_id=d.id '
-            'GROUP BY d.id ORDER BY d.added_at DESC,d.filename')]
+            'WHERE d.workspace=? GROUP BY d.id ORDER BY d.added_at DESC,d.filename',(w,))]
 
 
-def search_knowledge(query: str, top_k: int = 4) -> list[dict[str, Any]]:
+def delete_document(document_id: str, workspace: str | None = None) -> bool:
+    w=workspace_id(workspace)
     initialize()
-    if not isinstance(query, str) or not query.strip():
-        raise ValueError('query is required')
-    if not 1 <= top_k <= 10 or len(query) > 1000:
-        raise ValueError('invalid top_k or query length')
+    with connect() as c:
+        row=c.execute('DELETE FROM documents WHERE id=? AND workspace=?',(document_id,w))
+        return row.rowcount == 1
+
+
+def _lexical_rank(rows: list[sqlite3.Row], query: str) -> list[tuple[int,float]]:
     q = Counter(tokens(query))
     if not q:
         return []
-    with connect() as c:
-        rows = c.execute('SELECT c.id,c.ordinal,c.text,d.filename,d.id AS document_id '
-                         'FROM chunks c JOIN documents d ON d.id=c.document_id').fetchall()
-    if not rows:
-        return []
     corp = [Counter(tokens(r['text'])) for r in rows]
-    avg_len = max(1, sum(sum(x.values()) for x in corp)/len(corp))
-    df = Counter()
+    avg_len = max(1,sum(sum(x.values()) for x in corp)/max(1,len(corp)))
+    df: Counter = Counter()
     for ct in corp:
         df.update(set(ct))
-    found = []
-    for r, counts in zip(rows, corp):
-        score = 0.0
-        size = sum(counts.values())
+    found: list[tuple[int,float]]=[]
+    for i,counts in enumerate(corp):
+        score=0.0
+        length=sum(counts.values())
         for term in q:
-            tf = counts.get(term, 0)
+            tf=counts.get(term,0)
             if tf:
-                idf = math.log(1 + (len(rows)-df[term]+0.5)/(df[term]+0.5))
-                score += idf * (tf * 2.2) / (tf + 1.2 * (0.25+0.75*size/avg_len))
-        if score > 0:
-            found.append({'source': r['filename'], 'document_id':r['document_id'],
-                          'chunk_id':r['ordinal'], 'citation':f"[{r['filename']}#c{r['ordinal']}]",
-                          'snippet':r['text'][:800], 'score':round(score,4)})
-    found.sort(key=lambda x: (-x['score'], x['source'], x['chunk_id']))
-    return found[:top_k]
+                idf=math.log(1+(len(rows)-df[term]+.5)/(df[term]+.5))
+                score += idf*(tf*2.2)/(tf+1.2*(.25+.75*length/avg_len))
+        if score>0:
+            found.append((i,score))
+    return sorted(found,key=lambda x:-x[1])
 
 
-def draft_ticket(title: str, reason: str, source: str, trace_id: str) -> dict[str, Any]:
-    initialize()
-    title, reason, source = (str(x).strip() for x in (title, reason, source))
-    if not (5 <= len(title) <= 160 and 10 <= len(reason) <= 1200):
-        raise ValueError('ticket title/reason length invalid')
-    if not source or len(source) > 250:
-        raise ValueError('a source citation is required')
-    ticket_id = 'T-' + uuid.uuid4().hex[:10].upper()
-    with connect() as c:
-        c.execute('INSERT INTO tickets(id,title,reason,source,status) VALUES (?,?,?,?,?)',
-                  (ticket_id,title,reason,source,'draft'))
-    audit(trace_id, 'ticket_drafted', {'ticket_id':ticket_id,'source':source})
-    return get_ticket(ticket_id)
-
-
-def get_ticket(ticket_id: str) -> dict[str, Any]:
+def search_knowledge(query: str, top_k: int=4, workspace: str | None=None) -> list[dict[str,Any]]:
+    w=workspace_id(workspace)
+    if not isinstance(query,str) or not query.strip() or len(query)>1000:
+        raise ValueError('query must be 1-1000 characters')
+    if not isinstance(top_k,int) or not 1<=top_k<=10:
+        raise ValueError('top_k must be 1..10')
     initialize()
     with connect() as c:
-        row = c.execute('SELECT * FROM tickets WHERE id=?', (ticket_id,)).fetchone()
-    if not row:
+        rows=c.execute('SELECT c.id,c.ordinal,c.text,d.filename,d.id AS document_id '
+                       'FROM chunks c JOIN documents d ON d.id=c.document_id '
+                       'WHERE d.workspace=? ORDER BY c.id',(w,)).fetchall()
+    if not rows:
+        return []
+    lexical=_lexical_rank(rows,query)
+    dense=[]
+    from app.semantic import semantic_rank
+    dense=semantic_rank(query,rows)  # [] when disabled/unavailable; never mislabeled semantic
+    # Reciprocal rank fusion. Dense similarity gate prevents unrelated matches.
+    fused: dict[int,float]={}
+    modes: dict[int,set[str]]={}
+    for mode,ranking in [('lexical',lexical),('dense',dense)]:
+        for rank,(index,_score) in enumerate(ranking[:50],start=1):
+            fused[index]=fused.get(index,0)+1/(60+rank)
+            modes.setdefault(index,set()).add(mode)
+    ranked=sorted(fused,key=lambda i:(-fused[i],rows[i]['filename'],rows[i]['ordinal']))[:top_k]
+    return [{'source':rows[i]['filename'],'document_id':rows[i]['document_id'],
+             'chunk_id':rows[i]['ordinal'],'citation':f"[{rows[i]['filename']}#c{rows[i]['ordinal']}]",
+             'snippet':rows[i]['text'][:800], 'score':round(fused[i],6),
+             'retrieval_mode':'+'.join(sorted(modes[i]))} for i in ranked]
+
+
+def _valid_source(source: str, workspace: str) -> bool:
+    match=re.fullmatch(r'\[([^\[\]#]+)#c(\d+)\]',source)
+    if not match:
+        return False
+    with connect() as c:
+        return c.execute('SELECT 1 FROM chunks c JOIN documents d ON d.id=c.document_id '
+                         'WHERE d.workspace=? AND d.filename=? AND c.ordinal=?',
+                         (workspace,match[1],int(match[2]))).fetchone() is not None
+
+
+def draft_ticket(title: str, reason: str, source: str, trace_id: str,
+                 workspace: str | None=None) -> dict[str,Any]:
+    w=workspace_id(workspace)
+    title,reason,source=(str(x).strip() for x in (title,reason,source))
+    if not (5<=len(title)<=160 and 10<=len(reason)<=1200):
+        raise ValueError('ticket title or reason length invalid')
+    initialize()
+    if not _valid_source(source,w):
+        raise ValueError('source must reference a document within this workspace')
+    tid='T-'+uuid.uuid4().hex[:12].upper()
+    with connect() as c:
+        c.execute('INSERT INTO tickets(id,workspace,title,reason,source,status) VALUES (?,?,?,?,?,?)',
+                  (tid,w,title,reason,source,'draft'))
+    audit(trace_id,'ticket_drafted',{'ticket_id':tid,'source':source},w)
+    return get_ticket(tid,w)
+
+
+def get_ticket(ticket_id: str, workspace: str | None=None) -> dict[str,Any]:
+    w=workspace_id(workspace)
+    initialize()
+    with connect() as c:
+        row=c.execute('SELECT * FROM tickets WHERE id=? AND workspace=?',(ticket_id,w)).fetchone()
+    if row is None:
         raise KeyError('ticket not found')
     return dict(row)
 
 
-def approve_ticket(ticket_id: str, approved_by: str, trace_id: str) -> dict[str, Any]:
-    initialize()
-    approver = approved_by.strip()
-    if not 2 <= len(approver) <= 100:
-        raise ValueError('approved_by must be 2–100 characters')
+def review_ticket(ticket_id: str, reviewer: str, approve: bool, trace_id: str,
+                  workspace: str | None=None) -> dict[str,Any]:
+    w=workspace_id(workspace)
+    reviewer=reviewer.strip()
+    if not 2<=len(reviewer)<=100:
+        raise ValueError('reviewer identity must be 2-100 characters')
     with connect() as c:
-        cur = c.execute("UPDATE tickets SET status='approved',approved_by=?,approved_at=datetime('now') "
-                        "WHERE id=? AND status='draft'", (approver,ticket_id))
-        if cur.rowcount != 1:
-            raise ValueError('ticket missing or already approved')
-    audit(trace_id, 'ticket_approved', {'ticket_id':ticket_id,'approved_by':approver})
-    return get_ticket(ticket_id)
+        cur=c.execute("UPDATE tickets SET status=?, reviewed_by=?, reviewed_at=datetime('now') "
+                      "WHERE id=? AND workspace=? AND status='draft'",
+                      ('approved' if approve else 'rejected', reviewer,ticket_id,w))
+        if cur.rowcount!=1:
+            raise ValueError('ticket missing or already reviewed')
+    audit(trace_id,'ticket_approved' if approve else 'ticket_rejected',
+          {'ticket_id':ticket_id,'reviewer':reviewer},w)
+    return get_ticket(ticket_id,w)
 
 
-def recent_audit(limit: int = 30) -> list[dict[str, Any]]:
+def approve_ticket(ticket_id: str, approved_by: str, trace_id: str,
+                   workspace: str | None=None) -> dict[str,Any]:
+    return review_ticket(ticket_id,approved_by,True,trace_id,workspace)
+
+
+def recent_audit(limit: int=30, workspace: str | None=None) -> list[dict[str,Any]]:
+    w=workspace_id(workspace)
     initialize()
     with connect() as c:
-        return [dict(r) for r in c.execute('SELECT trace_id,action,detail,created_at FROM audit '
-                                          'ORDER BY id DESC LIMIT ?', (min(100,max(1,limit)),))]
+        return [dict(r) for r in c.execute('SELECT trace_id,action,detail,created_at '
+                                          'FROM audit WHERE workspace=? ORDER BY id DESC LIMIT ?',
+                                          (w,min(100,max(1,limit))))]

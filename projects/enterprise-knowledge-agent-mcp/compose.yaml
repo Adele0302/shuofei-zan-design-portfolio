@@ -1,0 +1,15 @@
+services:
+  demo:
+    build: .
+    ports:
+      - "127.0.0.1:8000:8000" # Never expose this demo publicly
+    env_file:
+      - .env
+    volumes:
+      - ./local_data:/app/local_data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=4)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped

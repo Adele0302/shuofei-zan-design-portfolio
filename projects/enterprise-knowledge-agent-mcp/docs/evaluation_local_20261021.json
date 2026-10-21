@@ -1,0 +1,121 @@
+{
+  "dataset": "synthetic / 4 fictional Markdown policies",
+  "cases": 10,
+  "passed": 10,
+  "source_hit_at_k": 1.0,
+  "mrr_at_k": 0.9167,
+  "empty_result_accuracy": 1.0,
+  "mean_retrieval_latency_ms": 0.97,
+  "details": [
+    {
+      "question": "采购预算超过5000元需要谁审批？",
+      "expected_source": "01_采购审批规则.md",
+      "retrieved_sources": [
+        "01_采购审批规则.md",
+        "04_报价与交付.md",
+        "03_BOM变更与验收.md",
+        "02_供应商与打样.md"
+      ],
+      "rank": 1,
+      "passed": true,
+      "latency_ms": 3.25
+    },
+    {
+      "question": "AI能否自动批准采购？",
+      "expected_source": "01_采购审批规则.md",
+      "retrieved_sources": [
+        "04_报价与交付.md",
+        "03_BOM变更与验收.md",
+        "01_采购审批规则.md",
+        "02_供应商与打样.md"
+      ],
+      "rank": 3,
+      "passed": true,
+      "latency_ms": 0.7
+    },
+    {
+      "question": "供应商A金属支架打样周期是多少？",
+      "expected_source": "02_供应商与打样.md",
+      "retrieved_sources": [
+        "02_供应商与打样.md",
+        "04_报价与交付.md",
+        "01_采购审批规则.md"
+      ],
+      "rank": 1,
+      "passed": true,
+      "latency_ms": 0.62
+    },
+    {
+      "question": "纸质包装色样验收由谁提供？",
+      "expected_source": "02_供应商与打样.md",
+      "retrieved_sources": [
+        "02_供应商与打样.md",
+        "03_BOM变更与验收.md"
+      ],
+      "rank": 1,
+      "passed": true,
+      "latency_ms": 0.7
+    },
+    {
+      "question": "BOM变更工程更改单ECO需要哪些内容？",
+      "expected_source": "03_BOM变更与验收.md",
+      "retrieved_sources": [
+        "03_BOM变更与验收.md",
+        "01_采购审批规则.md"
+      ],
+      "rank": 1,
+      "passed": true,
+      "latency_ms": 0.62
+    },
+    {
+      "question": "装配干涉应该怎么处理？",
+      "expected_source": "03_BOM变更与验收.md",
+      "retrieved_sources": [
+        "03_BOM变更与验收.md"
+      ],
+      "rank": 1,
+      "passed": true,
+      "latency_ms": 0.66
+    },
+    {
+      "question": "报价超预算10%怎么处理？",
+      "expected_source": "04_报价与交付.md",
+      "retrieved_sources": [
+        "04_报价与交付.md",
+        "01_采购审批规则.md"
+      ],
+      "rank": 1,
+      "passed": true,
+      "latency_ms": 0.75
+    },
+    {
+      "question": "供应商交期延误超过3个工作日怎么办？",
+      "expected_source": "04_报价与交付.md",
+      "retrieved_sources": [
+        "04_报价与交付.md",
+        "02_供应商与打样.md",
+        "01_采购审批规则.md"
+      ],
+      "rank": 1,
+      "passed": true,
+      "latency_ms": 0.78
+    },
+    {
+      "question": "火星殖民舰队的发射许可码是多少？",
+      "expected_source": null,
+      "retrieved_sources": [],
+      "rank": 0,
+      "passed": true,
+      "latency_ms": 0.69
+    },
+    {
+      "question": "专属量子协议密钥 XYZABC123 是什么？",
+      "expected_source": null,
+      "retrieved_sources": [],
+      "rank": 0,
+      "passed": true,
+      "latency_ms": 0.98
+    }
+  ],
+  "scope": "retrieval only; no claims about generative accuracy"
+}

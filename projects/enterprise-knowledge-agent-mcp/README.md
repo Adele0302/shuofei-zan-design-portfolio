@@ -1,87 +1,157 @@
-# Enterprise Procurement Knowledge Agent · MCP · RAG
+# Enterprise Knowledge Agent · FDE Engineering Portfolio v2
 
-**FDE portfolio case study (synthetic data; local demo, not a deployed enterprise product).**
+**Document intelligence · RAG · LangGraph · MCP tools · tenant-scoped API · review-gated workflows · reproducible evaluation**
 
-**Authorship disclosure:** Built with AI assistance in October 2026 at the repository owner’s request. Implementation, demo, and test results should be independently reviewed and reproduced by the owner before describing this as their personal engineering work in a job application.
+> **Authorship and deployment disclosure.** An AI-assisted engineering portfolio demonstration created at the repository owner's request (October 2026). Source materials and sample procurement policies are synthetic. The owner should run the tests and be able to explain the architecture before representing implementation competency in interviews. **Not an enterprise production service, not real purchasing automation.**
 
-A reproducible workflow based on a procurement/BOM/prototyping use case:
+## Watch the whole workflow
 
-**Ingest documents → retrieve evidence → route through Agent → call real MCP stdio tools → prepare a ticket draft → require separate human approval → log and evaluate.**
+```
+   Synthetic business policy, supplier memo, BOM change, PDF or DOCX
+                          │  upload / parse / size-check / SHA256 dedupe
+                          ▼
+       Tenant-scoped SQLite document store + source-aware chunks
+                          │
+                 ┌────────┴─────────┐
+                 ▼                  ▼
+             BM25 lexical      optional trained dense embeddings
+                 │                  │  (local multilingual / OpenAI)
+                 └────────┬─────────┘
+                       rank fusion (RRF)
+                          │
+                    citation evidence
+                          │
+          LangGraph constrained state graph / offline fallback
+                          │
+            official MCP Python SDK via separate stdio server
+                          │
+              ┌───────────┴──────────┐
+              ▼                      ▼
+        grounded answer         local ticket draft
+       / justified refusal        (no external side effects)
+                                     │
+                             human reviewer + API key
+                                     │
+                            approve / reject locally
+                          ┌──────────┴──────────┐
+                    audit trace         test + gold-set evaluation
+```
 
-## What is implemented
+### Implemented capabilities and their real limits
 
-| Capability | Implementation / proof |
-|---|---|
-| Document input | FastAPI multipart upload or CLI; `.txt`, `.md`, `.pdf`, `.docx`; 8 MiB limit and SHA-256 deduplication |
-| Knowledge retrieval | SQLite chunks, mixed Chinese/English tokenization and BM25-style lexical ranking, source+chunk citation |
-| Agent | Explicit fixed tool orchestration, abstention, tool trace, safe fallback; optional OpenAI answer phrasing |
-| Real MCP calls | Separate MCP stdio JSON-RPC 2024-11-05 server and client: handshake, `tools/list`, `tools/call` |
-| MCP tools | `search_knowledge`, `list_documents`, `create_ticket_draft`, `get_ticket` |
-| Error handling | File validation, missing evidence refusal, invalid tool, timeouts, duplicate submission checks |
-| Human-in-the-loop | Local draft by Agent, separate `POST /tickets/{id}/approve` with approver name; never sends orders/payments |
-| Evaluation | Synthetic source-hit@k + abstention cases; unit/integration tests include real MCP subprocess |
-| Traceability | Per-request UUID, action trace, SQLite audit events, source citations |
+| Area | Implementation | Verification |
+|---|---|---|
+| Data | `.txt`, `.md`, `.pdf`, `.docx`; constrained parsing, chunking, SHA-256 dedup, deletion | Automated tests |
+| Baseline RAG | Mixed-language BM25 lexical ranking; source citation and abstention | 10-question **synthetic** retrieval benchmark |
+| Advanced RAG | Opt-in **real embedding provider** via `sentence-transformers` or OpenAI; persistent vectors and reciprocal rank fusion | Vector persistence and fusion tested with deterministic mock embeddings; real model quality **not verified** here |
+| Agent | Explicit `route → retrieve → compose → optional draft` state graph via LangGraph; deterministic fallback when package absent | Graph test runs in dependency-equipped GitHub CI (not locally in offline environment) |
+| MCP | Separate stdio tool server using **official Python SDK** when installed; limited protocol fallback otherwise | Fallback subprocess tested locally; official client/server smoke test included for CI |
+| Tooling | Knowledge search, document list, draft ticket, ticket lookup | Real stdio subprocess tests |
+| Safety | API key RBAC (reader/editor/reviewer/admin), workspace isolation, citations checked, separate human review, no order/payment/email tool | Auth, RBAC, isolation and side-effect tests |
+| Observability | Trace UUID, tool trace, request mode, local audit records | Unit/integration tests |
+| UI / API | Browser demo + FastAPI Swagger, upload, search, Agent, approvals | HTTP tests |
+| Operations | Docker image, localhost-only Compose bind, GitHub Actions test matrix | Docker/CI workflow defined; external deployment not claimed |
 
-**Scope & honesty:** This is a lightweight **lexical-RAG** baseline, not semantic vector search. It is not a production-grade autonomous LLM agent. `OPENAI_API_KEY` adds constrained grounded answer generation; otherwise answers are explicitly labeled **offline extractive**. The MCP implementation uses core stdio protocol rather than the official SDK. No real company records or credentials are included.
-
-## Quick start
-
-Requires Python **3.11+**. On an internet-connected machine:
+## Fastest demo (Python 3.11+)
 
 ```bash
-cd projects/enterprise-knowledge-agent-mcp # if opened inside the portfolio repository
+cd projects/enterprise-knowledge-agent-mcp
 python -m venv .venv
-# Linux/macOS: source .venv/bin/activate
-# Windows PowerShell: .venv\\Scripts\\Activate.ps1
+# macOS/Linux: source .venv/bin/activate
+# Windows: .venv\Scripts\activate
 pip install -r requirements.txt
+python scripts/setup_local.py  # securely generates local demo .env keys (ignored by git)
 python -m app.cli seed
 python -m app.cli ask '采购预算超过5000元需要谁审批？'
-python -m app.cli ask '创建工单：供应商A打样尺寸偏差如何处理？'
+python -m app.cli ask '创建工单：供应商A打样出现尺寸偏差，如何处理？'
 python -m app.evaluate
-pytest -q
+python -m pytest -q
+uvicorn app.api:app --host 127.0.0.1 --port 8000
 ```
 
-Run HTTP API:
+Open **http://127.0.0.1:8000/**. Enter one of the API keys printed by `scripts/setup_local.py` for the appropriate action; the browser does not persist the key in localStorage. HTTP API schema is at `/docs`.
+
+> `python -m app.cli` is intended for **local trusted terminal use**. API endpoints refuse requests without configured `APP_API_KEYS`; their workspace is derived from the verified token, not user-controlled request payloads. Human approval takes the authenticated reviewer identity, not an arbitrary field from the request.
+
+### Switch on trained semantic embeddings (optional)
+
+The default mode is **lexical only** and needs no model download, paid API or account.
 
 ```bash
-uvicorn app.api:app --reload --host 127.0.0.1 --port 8000
-# Interactive API: http://127.0.0.1:8000/docs
+pip install -r requirements-semantic.txt
+# Set in .env: EMBEDDING_BACKEND=sentence-transformers
+# Optional: LOCAL_EMBEDDING_MODEL=sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+python -m app.cli reindex  # index previously ingested documents
+python -m app.cli search '工程变更的审批记录'
 ```
 
-Demo HTTP:
+This downloads an actual multilingual sentence embedding model on first use. Alternative: `EMBEDDING_BACKEND=openai`, with a valid `OPENAI_API_KEY` and `OPENAI_EMBEDDING_MODEL`. Chunk vectors persist in SQLite per model and are **not** mixed across models. Search combines BM25 and cosine similarity by reciprocal rank fusion. When the provider fails, the ingest API explicitly reports `vector_index: unavailable:<error_type>` and search falls back to lexical. **Do not publish real internal documents or use external model providers on confidential data without authorization.**
+
+### SDK / LangGraph verification
+
+`requirements.txt` includes the official `mcp` Python SDK and `langgraph`; when installed, the Agent automatically uses these. For a separate official MCP server:
 
 ```bash
-curl -F 'file=@data/sample_docs/03_BOM变更与验收.md' http://127.0.0.1:8000/documents/upload
-curl -H 'Content-Type: application/json' -d '{"question":"BOM变更需要记录什么？"}' http://127.0.0.1:8000/agent/ask
-# Only after explicitly inspecting a draft, approve it manually:
-# curl -H 'Content-Type: application/json' -d '{"approved_by":"demo reviewer"}' -X POST http://127.0.0.1:8000/tickets/T-REPLACE/approve
+python -m app.mcp_official    # stdio protocol, meant to be started by an MCP client
+# CLI/API invokes it in an isolated subprocess automatically.
 ```
 
-MCP tool protocol (core stdio):
+`MCP_PROTOCOL=official` requires the SDK and errors if unavailable. `MCP_PROTOCOL=fallback` chooses the smaller educational stdio bridge. Every Agent response reports its actual `mcp_protocol` and `agent_engine`. The core-tools fallback is explicitly **not** a certificate of full MCP protocol compliance.
+
+### Web API example
 
 ```bash
-python -m app.mcp_stdio
-# Send one JSON request per line, for example:
-# {"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"demo","version":"1.0"}}}
+# Use the generated editor key locally, never put actual keys in committed files.
+curl -H 'X-API-Key: YOUR_EDITOR_KEY' \
+  -F 'file=@data/sample_docs/01_采购审批规则.md' \
+  http://127.0.0.1:8000/documents/upload
+
+curl -H 'X-API-Key: YOUR_EDITOR_KEY' -H 'Content-Type: application/json' \
+  -d '{"question":"创建工单：供应商A打样尺寸偏差怎么办？","create_draft":true}' \
+  http://127.0.0.1:8000/agent/ask
+
+# After a human examines the draft, use the distinct REVIEWER key:
+curl -X POST -H 'X-API-Key: YOUR_REVIEWER_KEY' \
+  -H 'Content-Type: application/json' -d '{}' \
+  http://127.0.0.1:8000/tickets/T_REPLACE/approve
 ```
 
-> The demo contains **fictional procurement rules, prices, suppliers and sample processes**. Do not expose it to the internet: no user authentication/authorization, tenant isolation or encrypted storage have been implemented. API approval modifies a local record only. Never upload confidential real-world enterprise files.
+No real purchase, payment, external ticket system write, email or ERP connection exists.
 
-## Demo interview scenario
+### Docker on localhost
 
-1. Explain a fictional supplier quote or BOM change scenario and ingest sample documents.
-2. Ask a question that requires retrieval; show citation `[filename#c1]` and `tool_trace`.
-3. Ask to **create** a supplier issue ticket: its status remains `draft`.
-4. Show that approval is a separate operation requiring a human approver.
-5. Demonstrate refusal for a question absent from the knowledge base.
-6. Run the evaluation suite and explain limitations (small synthetic dataset, BM25 lexical baseline).
+```bash
+python scripts/setup_local.py
+mkdir -p local_data
+# On Linux, adjust the local_data directory owner to UID 10001 for the non-root image.
+docker compose up --build
+```
 
-## Test evidence & provenance
+Compose binds `127.0.0.1:8000` only. Do not publish this application over the internet: its API-key demonstration does **not** replace production SSO/OIDC, TLS, centralized rate limiting, encryption at rest, vault-backed credentials, tenant lifecycle, formal audit retention, DLP, or penetration testing.
 
-Run `pytest -q` and `python -m app.evaluate` to reproduce metrics **on your own machine**. No benchmark from other GitHub projects is represented as this project's result. Architecture influenced by the public ecosystem around LangGraph, OpenAI Agents, RAG and MCP; this demonstration's implementation is a self-contained original sample, not a copy of another repository.
+## Evaluation and debugging
 
-For a stronger next version, add official MCP SDK interoperability tests, tenant-isolated authentication, semantic vector retrieval, threat-model-driven prompt-injection evaluations, and a frontend (e.g. Streamlit).
+```bash
+python -m pytest -q
+python -m app.evaluate
+```
 
-Local verification (2026-10-21): **20/20 automated tests passed**, **10/10 synthetic source-hit/empty-result checks passed**. These are small synthetic baseline results, not a production benchmark. See [`docs/evaluation_summary.json`](docs/evaluation_summary.json) and [`docs/demo_run.json`](docs/demo_run.json).
+The reference evaluation dataset has **8 answerable + 2 unanswerable** questions against **four fictional policy files**. It computes measured `source_hit_at_k`, `MRR@k`, `empty_result_accuracy` and retrieval latency from the code on each run. There is no borrowed benchmark score. This does **not** establish real-world answer correctness, prompt injection immunity, recall under large corpora, or causal agent decision quality. Tests also check tenant isolation, unauthenticated API denial, forbidden approval, missing citations, untrusted document instructions and MCP subprocess calls.
 
-See [`docs/architecture.md`](docs/architecture.md) for architecture and safety boundaries.
+The full integration suite contains `pytest.importorskip` checks for official MCP SDK and LangGraph; installing `requirements.txt` (as CI does) is necessary to run those checks. Local constrained environments may skip them. See [`docs/architecture.md`](docs/architecture.md) and [`docs/security.md`](docs/security.md).
+
+## GitHub FDE portfolio / interview use
+
+**Evidence-backed truthful summary:** An AI-assisted, locally testable procurement knowledge Agent demo that parses synthetic procurement/BOM documents, retrieves cited evidence, orchestrates MCP tools, drafts issue tickets for human review, applies API-key workspace scoping and reports reproducible synthetic evaluation metrics. The offline default uses lexical retrieval; a real embedding model and official MCP SDK/LangGraph paths are configurable but should only be claimed as personally verified after reproducing them.
+
+**Never claim:** production-grade SOC2, a deployed customer's data, fully autonomous ordering, personally written independent source code, measured production RAG precision, or official SDK interoperability verified on a machine where the SDK was not installed.
+
+## Reference implementations / acknowledgments
+
+- [Official MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk)
+- [LangGraph](https://github.com/langchain-ai/langgraph)
+- [Sentence Transformers](https://github.com/UKPLab/sentence-transformers)
+- [Agentic RAG knowledge assistant (architecture reference)](https://github.com/jayanthlocam/agentic-rag-postgres-mcp)
+- [Agentic RAG + MCP (architecture reference)](https://github.com/akulapranisha/agentic-rag-mcp)
+
+The code here is not a wholesale fork of those repositories. Licensing of external implementations and pretrained models remains with their respective maintainers.

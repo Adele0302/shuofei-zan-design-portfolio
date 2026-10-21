@@ -1,0 +1,4 @@
+-r requirements.txt
+# Optional *real* dense embeddings downloaded from Hugging Face on first run.
+# sentence-transformers may pull PyTorch; use its platform-specific wheel instructions.
+sentence-transformers>=3,<6

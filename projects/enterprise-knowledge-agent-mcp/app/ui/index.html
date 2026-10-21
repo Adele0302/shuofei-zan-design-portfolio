@@ -1,0 +1,40 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Enterprise Knowledge Agent · FDE Demo</title><style>
+:root{color-scheme:dark;--bg:#0b1120;--panel:#111c30;--line:#33445c;--text:#e8f1fa;--muted:#96abc4;--accent:#5ddfb6;--blue:#91b9ff;--warning:#ffca86}*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at top left,#132945 0,#0b1120 65%);font:15px/1.55 system-ui,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--text)}
+main{max-width:1120px;margin:40px auto;padding:0 22px}header{padding-bottom:25px;border-bottom:1px solid var(--line);margin-bottom:26px}.eyebrow{letter-spacing:.12em;color:var(--accent);font-size:12px;font-weight:750}
+h1{font-size:clamp(28px,4vw,44px);margin:6px 0 12px;line-height:1.2}p{color:var(--muted);margin:4px 0 14px}.badge{background:#204c49;padding:6px 10px;color:#a6ffd8;border-radius:20px;font-size:12px}
+.layout{display:grid;grid-template-columns:330px minmax(0,1fr);gap:20px}.card{padding:22px;background:rgba(17,28,48,.96);border:1px solid var(--line);border-radius:18px;margin-bottom:20px;box-shadow:0 14px 35px #02081335}
+h2{font-size:18px;margin:0 0 16px}label{display:block;color:#d5e8f9;font-size:13px;margin-bottom:8px}input,textarea{width:100%;background:#0b1526;border:1px solid #40516a;border-radius:10px;color:var(--text);padding:12px;outline:none;margin-bottom:12px;font:inherit}input:focus,textarea:focus{border-color:var(--accent)}textarea{min-height:100px;resize:vertical}
+button{background:#4fd5ad;border:0;border-radius:9px;color:#082522;font-weight:750;cursor:pointer;padding:10px 14px;transition:filter .15s}button:hover{filter:brightness(1.12)}button:disabled{opacity:.5;cursor:not-allowed}.secondary{background:#21324d;color:#dbeaff;border:1px solid #46607d}
+.group{display:flex;gap:8px;flex-wrap:wrap}.group>*{flex:1}pre{white-space:pre-wrap;word-break:break-word;background:#091322;border:1px solid #30435b;padding:14px;border-radius:10px;max-height:340px;overflow:auto;color:#d5e2f4;font-size:12px}
+.small{font-size:12px}.tag{display:inline-block;color:var(--blue);background:#1a2d48;border-radius:5px;padding:2px 7px;margin:3px 5px 3px 0;font-size:12px}#notification{color:var(--warning)}.citation{color:var(--accent)}
+@media(max-width:780px){.layout{grid-template-columns:1fr}main{margin:22px auto}}
+</style></head><body><main>
+<header><div class="eyebrow">FORWARD DEPLOYED ENGINEERING / WORKING PORTFOLIO DEMO</div><h1>Enterprise Knowledge Agent</h1><p>合成采购知识库 · RAG 检索 · MCP 工具调用 · 工单草稿 · 人工审批 · 可追踪评测</p><span class="badge">Local-only demonstration · No real purchasing</span></header>
+<div class="layout"><aside>
+<section class="card"><h2>01 · 身份与权限</h2><label>API Key（仅保存在当前页面内存中）</label><input type="password" id="key" placeholder="在 APP_API_KEYS 中配置的密钥" autocomplete="off"><p class="small">上传/工单需要 editor；审批需要 reviewer。生产环境应接入 OIDC。</p><button class="secondary" id="health">检查服务</button></section>
+<section class="card"><h2>02 · 数据输入</h2><label>企业资料（合成或脱敏）</label><input type="file" id="file" accept=".txt,.md,.pdf,.docx"><button id="upload">上传并切分入库</button><p class="small">上传后自动去重；可选择本地嵌入向量或 API 嵌入。</p><button class="secondary" id="docs">查看我的文档</button></section>
+<section class="card"><h2>04 · 人工审批</h2><label>工单 ID</label><input id="ticket" placeholder="T-..."><div class="group"><button id="approve">审批通过</button><button class="secondary" id="reject">驳回</button></div><p class="small">审核仅改变本地状态，不会发出采购单。</p></section>
+</aside><div>
+<section class="card"><h2>03 · Agent 与 MCP</h2><label>业务问题</label><textarea id="question">采购预算超过5000元需要谁审批？</textarea><label><input style="width:auto;margin:0 7px 0 0" id="draft" type="checkbox"> 同时生成待审核工单草稿（需要 editor 身份）</label><div class="group"><button id="ask">运行 Agent</button><button id="search" class="secondary">仅搜索知识库</button></div></section>
+<section class="card"><h2>结果与调用轨迹</h2><p id="notification" role="status">配置 API Key，导入样例资料后开始。</p><div id="answer" aria-live="polite"></div><pre id="raw">{ "status": "ready" }</pre></section>
+<section class="card"><h2>项目边界</h2><p>这是 AI 辅助开发的学习作品。无生产级 SSO、合规审计、真实采购集成或准确率保障。离线基础版本为 BM25 词法检索；设置嵌入服务后提供稠密 + 词法混合检索。所有外部资料视为不可信输入。</p></section>
+</div></div></main><script>
+const $=id=>document.getElementById(id);const note=t=>{ $('notification').textContent=t;};
+async function call(path,{method='GET',json,form}={}) {const options={method,headers:{'X-API-Key':$('key').value}};
+if(json!==undefined){options.headers['Content-Type']='application/json';options.body=JSON.stringify(json);}if(form)options.body=form;
+const response=await fetch(path,options);const data=await response.json();if(!response.ok)throw Error(data.detail||'HTTP '+response.status);return data;}
+function show(data){$('raw').textContent=JSON.stringify(data,null,2);$('answer').replaceChildren();
+if(data.answer){const text=document.createElement('p');text.textContent=data.answer; $('answer').append(text);}
+if(data.sources){data.sources.forEach(s=>{const span=document.createElement('span');span.className='tag';span.textContent=s.citation+' · '+s.retrieval_mode;$('answer').append(span);});}
+if(data.ticket)$('ticket').value=data.ticket.id;note('完成 · 请查看来源引用与工具轨迹');}
+async function run(fn){note('正在执行…');try{show(await fn());}catch(e){note('操作失败：'+e.message);}}
+$('health').onclick=()=>run(()=>call('/health'));
+$('docs').onclick=()=>run(()=>call('/documents'));
+$('upload').onclick=()=>run(()=>{if(!$('file').files.length)throw Error('请先选择文件');const form=new FormData();form.append('file',$('file').files[0]);return call('/documents/upload',{method:'POST',form});});
+$('ask').onclick=()=>run(()=>call('/agent/ask',{method:'POST',json:{question:$('question').value,create_draft:$('draft').checked}}));
+$('search').onclick=()=>run(()=>call('/search',{method:'POST',json:{query:$('question').value}}));
+$('approve').onclick=()=>run(()=>call('/tickets/'+encodeURIComponent($('ticket').value)+'/approve',{method:'POST',json:{note:'Reviewed in demo'}}));
+$('reject').onclick=()=>run(()=>call('/tickets/'+encodeURIComponent($('ticket').value)+'/reject',{method:'POST',json:{note:'Rejected in demo'}}));
+</script></body></html>

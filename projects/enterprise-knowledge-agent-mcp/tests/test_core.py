@@ -42,10 +42,11 @@ def test_invalid_topk(seeded):
 
 
 def test_ticket_requires_approval():
+    add_document('supplier.md','供应商延误超过3个工作日需要处理'.encode())
     t=draft_ticket('供应商延期整改','供应商延误超过3个工作日需要处理','[supplier.md#c1]','trace')
-    assert t['status']=='draft' and t['approved_at'] is None
+    assert t['status']=='draft' and t['reviewed_at'] is None
     approved=approve_ticket(t['id'],'Demo Reviewer','trace-approve')
-    assert approved['status']=='approved' and approved['approved_by']=='Demo Reviewer'
+    assert approved['status']=='approved' and approved['reviewed_by']=='Demo Reviewer'
     with pytest.raises(ValueError): approve_ticket(t['id'],'Demo Reviewer','trace-again')
 
 

@@ -25,10 +25,12 @@ TOOLS = [
 
 
 def invoke(name: str, args: dict[str,Any]) -> Any:
-    if name=='search_knowledge': return search_knowledge(args['query'], int(args.get('top_k', 4)))
-    if name=='list_documents': return list_documents()
-    if name=='create_ticket_draft': return draft_ticket(args['title'],args['reason'],args['source'],args['trace_id'])
-    if name=='get_ticket': return get_ticket(args['ticket_id'])
+    from app.core import workspace_id
+    w = workspace_id()
+    if name=='search_knowledge': return search_knowledge(args['query'], int(args.get('top_k', 4)), workspace=w)
+    if name=='list_documents': return list_documents(workspace=w)
+    if name=='create_ticket_draft': return draft_ticket(args['title'],args['reason'],args['source'],args['trace_id'],workspace=w)
+    if name=='get_ticket': return get_ticket(args['ticket_id'],workspace=w)
     raise ValueError('unknown MCP tool')
 
 
