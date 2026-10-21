@@ -70,17 +70,16 @@ class MCPClient:
                 result=await self._session.list_tools()
                 return [{'name':t.name,'description':t.description or ''} for t in result.tools]
             response=await self._session.call_tool(name,params or {})
-            if response.isError:
+            if getattr(response,'isError',getattr(response,'is_error',False)):
                 raise MCPError('MCP tool error: '+str(response.content[0].text)[:250])
-            # SDK may expose structuredContent with result wrapper; text preserves
-            # exact tool payload across 1.x SDK variants.
+            structured=getattr(response,'structured_content',None)
+            if structured is None: structured=getattr(response,'structuredContent',None)
+            if isinstance(structured,dict):
+                return structured.get('result',structured)
             for item in response.content:
                 if getattr(item,'type',None)=='text':
                     try: return json.loads(item.text)
                     except (ValueError,TypeError): pass
-            structured=getattr(response,'structuredContent',None)
-            if isinstance(structured,dict):
-                return structured.get('result',structured)
             raise MCPError('empty or unparseable MCP tool result')
         future=asyncio.run_coroutine_threadsafe(go(),self._loop)
         try: return future.result(timeout=20)

@@ -1,4 +1,4 @@
-# Enterprise Knowledge Agent · FDE Engineering Portfolio v2
+# Enterprise Knowledge Agent · FDE Engineering Portfolio v3
 
 **Document intelligence · RAG · LangGraph · MCP tools · tenant-scoped API · review-gated workflows · reproducible evaluation**
 
@@ -42,15 +42,24 @@
 | Area | Implementation | Verification |
 |---|---|---|
 | Data | `.txt`, `.md`, `.pdf`, `.docx`; constrained parsing, chunking, SHA-256 dedup, deletion | Automated tests |
-| Baseline RAG | Mixed-language BM25 lexical ranking; source citation and abstention | 10-question **synthetic** retrieval benchmark |
+| Baseline RAG | Mixed-language BM25 lexical ranking; source citation and abstention | 10-question **synthetic** retrieval benchmark and eight governance cases |
 | Advanced RAG | Opt-in **real embedding provider** via `sentence-transformers` or OpenAI; persistent vectors and reciprocal rank fusion | Vector persistence and fusion tested with deterministic mock embeddings; real model quality **not verified** here |
-| Agent | Explicit `route → retrieve → compose → optional draft` state graph via LangGraph; deterministic fallback when package absent | Graph test runs in dependency-equipped GitHub CI (not locally in offline environment) |
-| MCP | Separate stdio tool server using **official Python SDK** when installed; limited protocol fallback otherwise | Fallback subprocess tested locally; official client/server smoke test included for CI |
+| Agent | Explicit `route → retrieve → compose → optional draft` state graph via LangGraph; deterministic fallback when package absent | CI matrix runs integration checks under installed dependencies; remote result must be inspected |
+| MCP | Separate stdio tool server using **official Python SDK** when installed; limited protocol fallback otherwise | Fallback subprocess tested locally; official client/server smoke test included for CI under SDK 1.x and 2.x |
 | Tooling | Knowledge search, document list, draft ticket, ticket lookup | Real stdio subprocess tests |
 | Safety | API key RBAC (reader/editor/reviewer/admin), workspace isolation, citations checked, separate human review, no order/payment/email tool | Auth, RBAC, isolation and side-effect tests |
 | Observability | Trace UUID, tool trace, request mode, local audit records | Unit/integration tests |
 | UI / API | Browser demo + FastAPI Swagger, upload, search, Agent, approvals | HTTP tests |
 | Operations | Docker image, localhost-only Compose bind, GitHub Actions test matrix | Docker/CI workflow defined; external deployment not claimed |
+
+## V3 reliability improvements (Oct 21, 2026)
+
+- Official MCP SDK **1.x/2.x** server imports supported; client accepts both camelCase and snake_case result fields. SDK 2.x renamed `FastMCP` to `MCPServer`; the v2 code previously broke at startup with the latest SDK.
+- Verified retrieval references now use **immutable document IDs** for ticket evidence. Duplicate filenames are allowed for uploads but **ambiguous old name-only citations cannot authorize a ticket**.
+- Dense-vector SQL reads are **workspace-scoped before Python cosine ranking**; a user's search never imports other workspaces' vectors into the ranking pipeline.
+- A conservative **prompt-injection quarantine** flags obvious instruction-like text in search results. Flagged snippets are not passed to the LLM and cannot be a basis for autonomous draft creation. This heuristic is not a comprehensive anti-injection solution.
+- Added eight reproducible adversarial and governance checks (tenant isolation, ambiguous citations, injection nonexecution, approval replay and abstention). CI treats any failed case as a nonzero exit code.
+- Added an SDK-major-version CI matrix and explicit official-MCP/LangGraph checks. **Passing source tests is not proof of deployment quality.**
 
 ## Fastest demo (Python 3.11+)
 
@@ -65,6 +74,8 @@ python -m app.cli seed
 python -m app.cli ask '采购预算超过5000元需要谁审批？'
 python -m app.cli ask '创建工单：供应商A打样出现尺寸偏差，如何处理？'
 python -m app.evaluate
+python -m app.evaluate_safety
+python scripts/demo_acceptance.py  # complete offline tool + review journey
 python -m pytest -q
 uvicorn app.api:app --host 127.0.0.1 --port 8000
 ```
@@ -116,7 +127,7 @@ curl -X POST -H 'X-API-Key: YOUR_REVIEWER_KEY' \
   http://127.0.0.1:8000/tickets/T_REPLACE/approve
 ```
 
-No real purchase, payment, external ticket system write, email or ERP connection exists.
+No real purchase, payment, external ticket system write, email or ERP connection exists. For a standalone, automatically checked proof of the full workflow run `python scripts/demo_acceptance.py`. Its example transcript is in `docs/demo_acceptance_v3.json`.
 
 ### Docker on localhost
 
@@ -134,11 +145,12 @@ Compose binds `127.0.0.1:8000` only. Do not publish this application over the in
 ```bash
 python -m pytest -q
 python -m app.evaluate
+python -m app.evaluate_safety
 ```
 
 The reference evaluation dataset has **8 answerable + 2 unanswerable** questions against **four fictional policy files**. It computes measured `source_hit_at_k`, `MRR@k`, `empty_result_accuracy` and retrieval latency from the code on each run. There is no borrowed benchmark score. This does **not** establish real-world answer correctness, prompt injection immunity, recall under large corpora, or causal agent decision quality. Tests also check tenant isolation, unauthenticated API denial, forbidden approval, missing citations, untrusted document instructions and MCP subprocess calls.
 
-The full integration suite contains `pytest.importorskip` checks for official MCP SDK and LangGraph; installing `requirements.txt` (as CI does) is necessary to run those checks. Local constrained environments may skip them. See [`docs/architecture.md`](docs/architecture.md) and [`docs/security.md`](docs/security.md).
+The full integration suite contains `pytest.importorskip` checks for official MCP SDK and LangGraph; installing `requirements.txt` (as CI does) is necessary to run those checks. Local constrained environments may skip them. See [`docs/architecture.md`](docs/architecture.md), [`docs/security.md`](docs/security.md), and [`docs/FDE_resume_bullets.md`](docs/FDE_resume_bullets.md).
 
 ## GitHub FDE portfolio / interview use
 

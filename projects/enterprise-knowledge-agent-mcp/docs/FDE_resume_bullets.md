@@ -19,3 +19,12 @@
 - Added automated API, security, retrieval and tool-call tests: **32 passing locally, two optional SDK/graph checks skipped** in the constrained local environment; evaluated retrieval against ten synthetic examples.
 
 **Interview caveat:** AI-assisted portfolio implementation, not personally authored from scratch or deployed for a real enterprise. Official MCP SDK/LangGraph code paths require independent reproduction with installed packages; no production accuracy/security claims.
+
+
+## V3 follow-up (2026-10-21)
+
+**Safe addition in Chinese:** 补充不可变文档 ID 来源校验、跨工作区向量检索隔离及提示注入可疑内容隔离；以 8 条安全/治理场景回归检查校验来源引用、跨租户检索、草稿审批与拒答边界。
+
+**Safe addition in English:** Strengthened immutable citation provenance, tenant-scoped dense ranking and prompt-injection quarantine; added eight deterministic governance tests covering source ambiguity, workspace isolation, approval replay, and abstention.
+
+**Scope constraint:** These are synthetic tests and AI-assisted changes. Do not state verified MCP v2 production interoperability or security certification until independently reproduced in the target environment.

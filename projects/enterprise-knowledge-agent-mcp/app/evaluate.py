@@ -50,4 +50,7 @@ def evaluate(path: str='data/evaluation/gold.json',isolated:bool=True)->dict:
         if tmp:tmp.cleanup()
 
 if __name__=='__main__':
-    print(json.dumps(evaluate(),ensure_ascii=False,indent=2))
+    result=evaluate()
+    print(json.dumps(result,ensure_ascii=False,indent=2))
+    if result['passed']!=result['cases']:
+        raise SystemExit(1)

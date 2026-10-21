@@ -237,7 +237,7 @@ def search_knowledge(query: str, top_k: int=4, workspace: str | None=None) -> li
     lexical=_lexical_rank(rows,query)
     dense=[]
     from app.semantic import semantic_rank
-    dense=semantic_rank(query,rows)  # [] when disabled/unavailable; never mislabeled semantic
+    dense=semantic_rank(query,rows,w)  # [] when disabled/unavailable; never mislabeled semantic
     # Reciprocal rank fusion. Dense similarity gate prevents unrelated matches.
     fused: dict[int,float]={}
     modes: dict[int,set[str]]={}
@@ -248,18 +248,32 @@ def search_knowledge(query: str, top_k: int=4, workspace: str | None=None) -> li
     ranked=sorted(fused,key=lambda i:(-fused[i],rows[i]['filename'],rows[i]['ordinal']))[:top_k]
     return [{'source':rows[i]['filename'],'document_id':rows[i]['document_id'],
              'chunk_id':rows[i]['ordinal'],'citation':f"[{rows[i]['filename']}#c{rows[i]['ordinal']}]",
-             'snippet':rows[i]['text'][:800], 'score':round(fused[i],6),
+             'snippet':rows[i]['text'][:800], 'source_ref':f"[{rows[i]['document_id']}#c{rows[i]['ordinal']}]",
+             'score':round(fused[i],6),
              'retrieval_mode':'+'.join(sorted(modes[i]))} for i in ranked]
 
 
 def _valid_source(source: str, workspace: str) -> bool:
+    """Resolve an immutable document ID. Legacy filename refs must be unique.
+
+    A user can upload different documents with the *same filename*. A human
+    citation is not therefore an adequate authorization reference: silently
+    accepting it could attach evidence from an entirely different document.
+    """
     match=re.fullmatch(r'\[([^\[\]#]+)#c(\d+)\]',source)
     if not match:
         return False
+    marker,ordinal=match[1],int(match[2])
     with connect() as c:
-        return c.execute('SELECT 1 FROM chunks c JOIN documents d ON d.id=c.document_id '
-                         'WHERE d.workspace=? AND d.filename=? AND c.ordinal=?',
-                         (workspace,match[1],int(match[2]))).fetchone() is not None
+        if re.fullmatch(r'[0-9a-f]{20}',marker):
+            row=c.execute('SELECT COUNT(*) FROM chunks c JOIN documents d ON d.id=c.document_id '
+                          'WHERE d.workspace=? AND d.id=? AND c.ordinal=?',
+                          (workspace,marker,ordinal)).fetchone()
+        else:
+            row=c.execute('SELECT COUNT(*) FROM chunks c JOIN documents d ON d.id=c.document_id '
+                          'WHERE d.workspace=? AND d.filename=? AND c.ordinal=?',
+                          (workspace,marker,ordinal)).fetchone()
+    return row[0]==1
 
 
 def draft_ticket(title: str, reason: str, source: str, trace_id: str,

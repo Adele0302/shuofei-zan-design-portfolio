@@ -26,3 +26,12 @@
 ## Production upgrade checklist (not represented as completed)
 
 OIDC & SCIM; TLS reverse proxy; cryptographic per-tenant isolation; short-lived service tokens; async ingestion workers; pgvector/HNSW; distributed tracing; signed document provenance; comprehensive non-LLM policy engine; audit retention; load tests; red-team prompt-injection suite; human-in-the-loop approval via actual business identities; monitoring and rollback.
+
+## V3 regression defenses (2026-10-21)
+
+- Citation-based ticket evidence uses `source_ref` with an immutable document ID. Legacy `[filename#cN]` citations work only when they identify exactly one chunk in the workspace.
+- The dense index loads only chunk vectors joined to an authorized workspace's documents. The ranking query no longer loads vectors from all tenants first.
+- Source snippets containing obvious adversarial commands are quarantined before optional LLM synthesis or draft-ticket creation. This is a heuristic, **not** a guarantee against indirect prompt injection, document poisoning or jailbreaking.
+- The optional paid LLM is kept read-only; the deterministic application code owns every write action. There are no external purchase, email or finance tools.
+- Evaluation includes eight scoped negative-case checks: `python -m app.evaluate_safety`; individual cases and limitations are returned in JSON.
+- Official MCP Python SDK 2.x renamed the server class. This release attempts v2 import first and provides the v1 fallback, with a version-split CI matrix. The host used for local tests did not have the official SDK installed; only remote CI can verify those integrations.

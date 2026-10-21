@@ -1,0 +1,36 @@
+{
+  "demo": "synthetic/offline full journey",
+  "documents": 4,
+  "question": "创建工单：供应商A打样尺寸偏差，处理流程是什么？",
+  "answer_mode": "extractive_offline",
+  "agent_engine": "deterministic_fallback",
+  "mcp_protocol": "minimal_stdio_fallback",
+  "citations": [
+    "[02_供应商与打样.md#c1]",
+    "[01_采购审批规则.md#c1]",
+    "[04_报价与交付.md#c1]",
+    "[03_BOM变更与验收.md#c1]"
+  ],
+  "source_refs": [
+    "[a5ae59160b9508bd15e7#c1]",
+    "[405e32c9ebe6e91aea2d#c1]",
+    "[e573cd25538e3c950286#c1]",
+    "[229ba857d6bd916586fd#c1]"
+  ],
+  "tool_trace": [
+    {
+      "tool": "search_knowledge",
+      "count": 4
+    },
+    {
+      "tool": "create_ticket_draft",
+      "ticket_id": "T-FED2605E0E11",
+      "status": "draft"
+    }
+  ],
+  "ticket_id": "T-FED2605E0E11",
+  "ticket_before": "draft",
+  "ticket_after": "approved",
+  "external_purchase_actions": 0,
+  "passed": true
+}

@@ -73,15 +73,18 @@ def index_document(docid: str, workspace: str) -> str:
         return 'unavailable:'+type(e).__name__
 
 
-def semantic_rank(query: str, rows: list[Any]) -> list[tuple[int,float]]:
+def semantic_rank(query: str, rows: list[Any], workspace: str) -> list[tuple[int,float]]:
     backend,model=model_config()
     if backend=='off' or not rows:
         return []
     try:
         from app.core import connect
         with connect() as c:
-            vectors=c.execute('SELECT chunk_id,dimension,vector FROM chunk_vectors WHERE model_id=?',
-                              (backend+':'+model,)).fetchall()
+            vectors=c.execute('SELECT v.chunk_id,v.dimension,v.vector FROM chunk_vectors v '
+                              'JOIN chunks c ON c.id=v.chunk_id '
+                              'JOIN documents d ON d.id=c.document_id '
+                              'WHERE d.workspace=? AND v.model_id=?',
+                              (workspace,backend+':'+model,)).fetchall()
         lookup={r['chunk_id']:r for r in vectors}
         vec=_normalised(_encode([query])[0])
         if not vec:

@@ -1,11 +1,16 @@
 """Official MCP Python SDK server. Transport is local stdio by default.
 
-Install mcp>=1.10,<3 and run: python -m app.mcp_official
+Install mcp>=1.10,<3 (SDK 1.x and 2.x supported) and run: python -m app.mcp_official
 A separate authenticated API process supplies FDE_WORKSPACE to this local server.
 Never run this stdio server as an untrusted shared OS account.
 """
 from __future__ import annotations
-from mcp.server.fastmcp import FastMCP
+try:
+    # Official MCP SDK 2.x (see upstream migration guide).
+    from mcp.server import MCPServer as FastMCP
+except ImportError:
+    # Official MCP SDK 1.x.
+    from mcp.server.fastmcp import FastMCP
 from app.core import search_knowledge, list_documents, draft_ticket, get_ticket, workspace_id
 
 mcp = FastMCP('FDE Procurement Knowledge Agent', instructions=(
