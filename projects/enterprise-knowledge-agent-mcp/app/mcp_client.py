@@ -86,6 +86,8 @@ class MCPClient:
         try: return future.result(timeout=20)
         except TimeoutError:
             future.cancel();raise MCPError('official MCP call timed out')
+        except Exception as exc:
+            raise MCPError('official MCP transport/tool error: '+type(exc).__name__) from exc
 
     def _fallback_start(self):
         env=os.environ.copy()
@@ -113,7 +115,8 @@ class MCPClient:
             self.close();raise MCPError('fallback MCP response timed out')
         if not lines or not lines[0]:
             raise MCPError('fallback MCP empty response')
-        value=json.loads(lines[0])
+        try: value=json.loads(lines[0])
+        except json.JSONDecodeError as exc: raise MCPError('fallback MCP invalid JSON response') from exc
         if value.get('id')!=self.counter or 'error' in value:
             raise MCPError(str(value.get('error') or 'MCP response ID mismatch'))
         return value['result']
