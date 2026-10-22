@@ -163,6 +163,18 @@ const issueURL='https://github.com/'+repo+'/issues/new';
 const apiURL='https://api.github.com/repos/'+repo+'/issues?state=open&sort=created&direction=desc&per_page=100';
 const choices={celadon:'#75a895',ink:'#74919e',ivory:'#d5c29b',amber:'#d5a875'};
 let glaze='celadon';
+const glazePaint={
+ celadon:['#f5faf0','#dce9dc','#9abdb2','#547e79','#285951'],
+ ink:['#f0f7f6','#cce3e4','#9cb9c3','#617d8c','#365663'],
+ ivory:['#fffff8','#f5efdd','#e9d5b8','#bdab83','#877254'],
+ amber:['#fff6e5','#efdfc3','#dbbe8d','#b8895d','#7b533e']
+};
+function paintGlaze(key){
+ const shades=glazePaint[key];
+ const gradient='radial-gradient(circle at 32% 25%,'+shades[0]+' 0%,'+shades[1]+' 18%,'+shades[2]+' 42%,'+shades[3]+' 70%,'+shades[4]+' 100%)';
+ document.querySelector('.porcelain').style.background=gradient;
+ document.querySelector('.art').setAttribute('aria-label','Illustration of a '+(key==='ink'?'blue':key)+' glazed porcelain disc');
+}
 const form=document.getElementById('noteform');
 const message=document.getElementById('message');
 const count=document.getElementById('count');
@@ -172,7 +184,7 @@ const toast=document.getElementById('toast');
 let toastTimer;
 document.getElementById('year').textContent=String(new Date().getFullYear());
 document.querySelectorAll('.swatch').forEach(function(button){
- button.addEventListener('click',function(){glaze=button.dataset.glaze;document.querySelectorAll('.swatch').forEach(function(b){b.setAttribute('aria-pressed',String(b===button));});});
+ button.addEventListener('click',function(){glaze=button.dataset.glaze;paintGlaze(glaze);document.querySelectorAll('.swatch').forEach(function(b){b.setAttribute('aria-pressed',String(b===button));});});
 });
 message.addEventListener('input',function(){count.textContent=String(message.value.length);});
 function alertUser(text){toast.textContent=text;toast.classList.add('active');clearTimeout(toastTimer);toastTimer=setTimeout(function(){toast.classList.remove('active');},6500);}
