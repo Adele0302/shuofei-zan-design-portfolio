@@ -1,0 +1,27 @@
+name: "✳ Sign the guestbook"
+description: "Leave a public little trace on Shuofei Zan's design guestbook."
+title: "[Guestbook] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for visiting! Your note will appear on the public guestbook at the portfolio site. Please do not include personal contact details or private information. A GitHub account is required to submit.
+  - type: dropdown
+    id: note-type
+    attributes:
+      label: Note type
+      description: Choose how your message should appear on the wall.
+      options:
+        - "Thought · an idea to share"
+        - "Question · something to ask"
+        - "Hello · just dropping by"
+    validations:
+      required: true
+  - type: textarea
+    id: your-note
+    attributes:
+      label: Your note
+      description: Be kind, specific, and curious. The message will be public.
+      placeholder: "A thought, a question, or a hello…"
+    validations:
+      required: true
