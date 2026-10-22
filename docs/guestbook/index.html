@@ -2,401 +2,258 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#fbf7ef">
-<meta name="description" content="The Cat Mail Club: a playful, interactive cat-themed guestbook for Shuofei Zan's design and research portfolio.">
-<title>The Cat Mail Club — Shuofei Zan</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#fff9ec">
+<meta name="description" content="Leave a little note for Shuofei — a tiny pixel-cat guestbook.">
+<title>Pixel Cat Guestbook · Shuofei Zan</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght,SOFT,WONK@9..144,500,50,1;9..144,600,50,1;9..144,700,50,1&display=swap');
-:root{--bg:#fbf7ef;--ink:#343a36;--muted:#767b72;--line:#e8e2d7;--peach:#f2b5a1;--orange:#dc825c;--lilac:#c5badb;--sage:#b7ceaf;--forest:#577968;--paper:#fffdfa;--shadow:0 15px 42px rgba(74,67,57,.08)}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:var(--bg);font-family:'DM Sans',Arial,sans-serif;-webkit-font-smoothing:antialiased}
-button,input,textarea{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}
-:focus-visible{outline:3px solid #c68467;outline-offset:4px}::selection{background:#efcfb8;color:#32322e}
-.skip-link{position:absolute;top:-80px;left:14px;background:white;z-index:100;padding:14px}.skip-link:focus{top:14px}
-.shell{width:min(1180px,calc(100% - 72px));margin:0 auto}
-header{display:flex;justify-content:space-between;align-items:center;gap:22px;padding:27px 0;border-bottom:1px solid var(--line)}
-.brand{display:flex;align-items:center;gap:10px;white-space:nowrap;letter-spacing:.04em;font-size:13px;font-weight:800}
-.brand-paw{width:34px;height:34px;background:#f5ded0;border-radius:12px;display:grid;place-items:center;transform:rotate(-8deg)}
-.brand-paw svg{width:21px;height:21px}
-.brand small{font-size:10px;font-weight:600;color:#a09d95;padding-left:9px;border-left:1px solid #d9d4cb}
-.nav{display:flex;align-items:center;gap:28px;font-size:12px;font-weight:700}
-.nav a:not(.nav-cta):hover{text-decoration:underline;text-underline-offset:5px}
-.nav-cta{border:1px solid #dfcabc;padding:12px 18px;border-radius:999px;transition:.2s}
-.nav-cta:hover{background:#f3e3d6}
-.hero{display:grid;grid-template-columns:1.02fr .98fr;gap:30px;min-height:605px;align-items:center;padding:62px 0 72px}
-.eyebrow,.section-kicker{font-size:11px;text-transform:uppercase;font-weight:800;letter-spacing:.18em;color:#a6755d}
-.eyebrow{display:flex;align-items:center;gap:11px}.eyebrow:before{content:"";width:7px;height:7px;border-radius:50%;background:#e2a989}
-h1,h2,h3,.display{font-family:'Fraunces',Georgia,serif;letter-spacing:-.047em}
-h1{font-weight:600;font-size:clamp(57px,6.8vw,100px);line-height:1.06;margin:22px 0 26px}
-h1 em{color:var(--orange);font-style:italic}
-.hero-description{font-size:15px;line-height:1.92;color:#767c72;max-width:460px;margin:0 0 33px}
-.hero-actions{display:flex;align-items:center;gap:25px;flex-wrap:wrap}
-.button-primary{background:var(--ink);border:1px solid var(--ink);border-radius:999px;padding:16px 25px;color:white;font-size:12px;font-weight:800;transition:transform .2s,background .2s}
-.button-primary:hover{transform:translateY(-2px);background:var(--forest)}
-.simple-link{font-size:12px;font-weight:800}.simple-link:hover{text-decoration:underline;text-underline-offset:5px}
-.hero-note{display:flex;align-items:center;gap:10px;color:#9a9a8f;font-size:11px;margin-top:34px}.hero-note span{width:25px;height:1px;background:#cbbdaf}
-.hero-art{height:475px;position:relative;display:flex;align-items:center;justify-content:center;isolation:isolate}
-.hero-art:before{content:"";width:min(420px,94%);aspect-ratio:1;border-radius:50%;background:#f9e2d4;position:absolute;z-index:-1;transform:translate(1%,3%)}
-.hero-art:after{content:"";width:80%;height:38px;position:absolute;bottom:25px;border-radius:50%;filter:blur(18px);background:#937b6b24;z-index:-1}
-.hero-art .blob{position:absolute;border:2px dashed #e4bda4;border-radius:50%;width:calc(100% - 50px);aspect-ratio:1;max-width:462px;transform:rotate(13deg)}
-.float-star{position:absolute;font-size:24px;color:#e5aa88;user-select:none}.star-one{top:9%;left:14%}.star-two{right:6%;top:20%;font-size:17px}.star-three{bottom:13%;left:9%;font-size:14px}
-.hero-cat-button{border:0;background:none;padding:0;width:min(400px,86%);position:relative;transition:transform .28s ease;animation:bob 5s ease-in-out infinite;z-index:1}
-.hero-cat-button:hover{transform:rotate(-3deg) scale(1.03)}.hero-cat-button:active{transform:scale(.97)}
-.hero-cat-button .cat-svg{width:100%;height:auto;filter:drop-shadow(0 22px 14px #99796528)}
-.hero-bubble{position:absolute;right:0;top:0;padding:12px 17px;border-radius:16px 16px 16px 2px;background:#fffefa;box-shadow:0 6px 25px #7b5b4624;transform:rotate(7deg);font-size:12px;font-weight:800;color:#a47462;z-index:2}
-.hero-sticker{position:absolute;left:3%;bottom:8%;background:#d7e8d3;padding:12px 15px;border-radius:14px;transform:rotate(-6deg);font-weight:700;font-size:11px;color:#5d7963;z-index:2}
-.purr-count{font-size:11px;letter-spacing:.05em;color:#9a8579;margin-top:12px;text-align:center}
-.halo-heart{position:absolute;z-index:10;font-size:25px;pointer-events:none;animation:flyheart .95s ease-out forwards}
-.strip{display:flex;align-items:center;gap:15px;padding:21px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:800;color:#9c988d;flex-wrap:wrap}
-.strip .dot{width:5px;height:5px;background:#dab69e;border-radius:50%}
-.section{padding:95px 0}
-.section-top{margin-bottom:38px}
-.section-top h2{font-size:clamp(42px,4.7vw,67px);line-height:1.1;font-weight:600;margin:15px 0 12px}
-.section-top p{line-height:1.8;color:var(--muted);max-width:630px;font-size:14px}
-.composer{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:stretch}
-.form-card,.preview-card{border:1px solid #ece2d6;background:var(--paper);border-radius:24px;box-shadow:var(--shadow)}
-.form-card{padding:38px 40px}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:25px}
-.field-group{margin-bottom:25px}.field-group label,.field-legend{display:block;font-size:11px;font-weight:800;letter-spacing:.07em;margin-bottom:12px}
-.field-group label small{font-weight:500;color:#a09d94}
-.input{border:1px solid #e7ded1;background:#fffcf8;border-radius:12px;padding:14px 15px;outline:0;color:var(--ink);width:100%;font-size:13px;transition:border-color .2s}
-.input:focus{border-color:#d8a88e;box-shadow:0 0 0 3px #eedacd55}.input::placeholder{color:#a6a49a}
-textarea.input{resize:vertical;min-height:115px;line-height:1.7}
-.choices{display:flex;flex-wrap:wrap;gap:9px}
-.coat-button,.mood-button{border:1px solid #e6dfd5;border-radius:999px;background:#fffcf8;color:#696c65;padding:9px 13px;font-size:11px;font-weight:800;display:flex;align-items:center;gap:7px;transition:.2s}
-.coat-button[aria-pressed=true],.mood-button[aria-pressed=true]{background:#f6e4d8;color:#854f3d;border-color:#dda98d}
-.coat-button:hover,.mood-button:hover{border-color:#d5ab94}
-.coat-dot{width:13px;height:13px;border-radius:50%;background:var(--coat);border:1px solid #00000017;flex:none}
-.message-counter{font-size:11px;color:#a09d94;text-align:right;margin-top:7px}
-.send-row{border-top:1px solid var(--line);padding-top:25px;display:flex;justify-content:space-between;align-items:center;gap:24px}
-.send-row .help{font-size:11px;line-height:1.7;color:#9a9d94;max-width:240px}.help a{text-decoration:underline}
-.preview-card{padding:31px;display:flex;align-items:center;flex-direction:column;justify-content:space-between;background:#e8efdf;position:relative;overflow:hidden;isolation:isolate}
-.preview-card:before{content:"";width:300px;height:300px;position:absolute;top:70px;border:2px dashed #9fb59a80;border-radius:50%;z-index:-1}
-.preview-card:after{content:"";position:absolute;top:-105px;right:-110px;width:250px;height:250px;border-radius:50%;background:#dcebd380;z-index:-1}
-.preview-header{width:100%;display:flex;justify-content:space-between;font-size:11px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:#67836f}
-.preview-cat{width:min(335px,96%);height:315px;display:flex;align-items:center;justify-content:center}
-.preview-cat .cat-svg{width:100%;height:100%;filter:drop-shadow(0 15px 8px #59725426);animation:bob 5.5s ease-in-out infinite}
-.preview-bottom{text-align:center}.preview-bottom h3{font-size:33px;font-weight:600;margin:0 0 8px}.preview-bottom p{font-size:12px;color:#698474;line-height:1.7;max-width:270px;margin:0 auto 8px}
-.cat-wall{background:#f5f0e6;border-top:1px solid #e8e0d4;border-bottom:1px solid #e8e0d4;padding:91px 0 100px}
-.wall-heading{display:flex;justify-content:space-between;align-items:end;gap:25px;margin-bottom:32px}
-.wall-heading h2{font-size:clamp(40px,4.7vw,65px);margin:12px 0 0}
-.wall-description{font-size:13px;color:#908b82;line-height:1.7;max-width:350px}
-.controls{display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap;margin-bottom:27px}
-.filters{display:flex;gap:8px;flex-wrap:wrap}
-.filter{border:1px solid #e1d6c9;border-radius:999px;background:transparent;color:#827a70;padding:9px 15px;font-size:11px;font-weight:800}
-.filter[aria-pressed=true]{background:#424b44;color:white;border-color:#424b44}
-.wall-tools{display:flex;align-items:center;gap:12px;font-size:11px;color:#8b887c}
-.refresh{border:1px solid #ded2c5;background:#fffaf4;border-radius:999px;padding:10px 14px;font-weight:800;color:#71685e}
-.refresh:hover{background:#f7e3d4}.refresh:disabled{opacity:.6;cursor:wait}
-.cat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:19px}
-.cat-note{position:relative;min-width:0;border:1px solid #e8dbcc;background:#fffefa;border-radius:20px;padding:22px 24px 21px;text-align:left;min-height:354px;display:flex;flex-direction:column;align-items:center;transition:transform .22s,box-shadow .22s;box-shadow:0 8px 20px #917f6a0c}
-.cat-note:hover{transform:translateY(-6px);box-shadow:0 16px 32px #917f6a24}
-.cat-note:focus-visible{outline-offset:-4px}
-.note-meta{display:flex;justify-content:space-between;align-items:center;width:100%;font-size:10px;letter-spacing:.09em;font-weight:800;text-transform:uppercase;color:#b0a79c}
-.note-meta .mood-badge{background:#f8eadd;border-radius:99px;padding:7px 10px;letter-spacing:0;color:#b2785f}
-.note-art{width:min(205px,75%);height:195px;display:flex;align-items:center;justify-content:center;margin:5px 0 -5px}
-.note-art .cat-svg{width:100%;height:100%;transition:transform .23s}
-.cat-note:hover .note-art .cat-svg{transform:rotate(-4deg) translateY(-4px)}
-.note-name{font:600 25px 'Fraunces',Georgia,serif;letter-spacing:-.04em;text-align:center;max-width:100%;overflow-wrap:anywhere;margin:0 0 9px}
-.note-snippet{font-size:12px;line-height:1.6;color:#8d8981;text-align:center;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:280px;min-height:38px;overflow-wrap:anywhere}
-.note-cta{margin-top:auto;color:#b27759;font-size:11px;font-weight:800;padding-top:14px}
-.empty{grid-column:1/-1;background:#fffbf5;border:1px dashed #dfd0be;border-radius:24px;min-height:370px;padding:28px;text-align:center;display:flex;align-items:center;flex-direction:column;justify-content:center}
-.empty-crew{display:flex;justify-content:center;gap:0;margin-bottom:7px}.empty-crew .cat-svg{width:150px;height:145px;margin:0 -17px}
-.empty h3{font-size:34px;margin:8px 0 10px;font-weight:600}
-.empty p{max-width:440px;color:#979184;font-size:13px;line-height:1.8;margin:0 0 23px}
-.empty .button-primary{font-size:11px}
-.footer{display:flex;justify-content:space-between;gap:20px;padding:35px 0 45px;align-items:center;font-size:11px;color:#969286}
-.footer a{text-decoration:underline;text-underline-offset:4px}
-dialog{width:min(540px,calc(100% - 28px));border:1px solid #eee1d1;border-radius:25px;box-shadow:0 24px 90px #403b36aa;padding:0;background:#fffdf8;color:var(--ink)}
-dialog::backdrop{background:#302d2ba6;backdrop-filter:blur(5px)}
-.letter{padding:36px 39px 35px;position:relative}.letter-top{display:flex;align-items:start;justify-content:space-between;gap:12px}
-.letter-label{font-size:11px;letter-spacing:.16em;font-weight:800;color:#ab8067}
-.close-dialog{border:1px solid #e7dbcc;border-radius:50%;width:36px;height:36px;background:white;color:#77716a;font-size:20px}
-.letter-cat{height:210px;display:grid;place-items:center;background:#f5e8db;margin:22px 0;border-radius:18px}
-.letter-cat .cat-svg{height:215px;width:230px}
-.letter h3{font-size:32px;font-weight:600;margin:15px 0 10px}
-.letter-message{font-size:15px;line-height:1.8;color:#6d716a;white-space:pre-wrap;overflow-wrap:anywhere;margin-bottom:24px}
-.letter-foot{border-top:1px solid #e9e1d5;padding-top:20px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-size:11px;color:#98968e}
-.letter-foot a{font-size:11px;font-weight:800;color:#ab7159;text-decoration:underline;text-underline-offset:4px}
-.toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,120px);opacity:0;pointer-events:none;max-width:min(560px,calc(100% - 32px));background:#35483d;color:white;border-radius:14px;padding:16px 24px;box-shadow:var(--shadow);font-size:12px;line-height:1.6;transition:.23s;z-index:100}
-.toast.show{transform:translate(-50%,0);opacity:1}
-@keyframes bob{0%,100%{translate:0 0}50%{translate:0 -9px}}
-@keyframes flyheart{0%{opacity:0;transform:translateY(0) scale(.4)}20%{opacity:1}100%{opacity:0;transform:translateY(-90px) scale(1.3)}}
-@media(max-width:960px){.shell{width:min(100% - 42px,810px)}.hero{min-height:515px}.hero-art{height:370px}.hero-bubble{right:3%}.composer{grid-template-columns:1fr}.preview-card{min-height:460px}.cat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero h1{font-size:clamp(56px,8vw,78px)}}
-@media(max-width:660px){.shell{width:calc(100% - 34px)}header{padding:19px 0}.brand{font-size:11px}.brand small,.nav a:not(.nav-cta){display:none}.nav-cta{font-size:11px;padding:11px 13px}
-.hero{grid-template-columns:1fr;padding:52px 0 35px;gap:0}.hero h1{font-size:clamp(57px,13.5vw,87px)}.hero-description{font-size:14px;margin-bottom:23px}.hero-note{margin-top:24px}
-.hero-art{height:350px;margin-top:12px}.hero-art:before{width:315px}.hero-art .blob{width:322px}.hero-cat-button{width:300px}.hero-sticker{bottom:4%}
-.strip{font-size:9px;gap:9px;padding:16px 0}.section{padding:67px 0}.section-top{margin-bottom:26px}
-.form-card{padding:25px 20px}.form-grid{grid-template-columns:1fr;gap:0}.preview-card{min-height:385px;padding:22px}.preview-cat{height:260px}.preview-bottom h3{font-size:29px}
-.send-row{flex-direction:column;align-items:stretch;gap:17px}.send-row .help{max-width:100%}.button-primary{text-align:center}
-.cat-wall{padding:69px 0}.wall-heading{display:block}.cat-grid{grid-template-columns:1fr}.cat-note{min-height:310px}.note-art{height:174px}.wall-description{margin-top:14px}
-.letter{padding:22px}.letter-cat{height:185px}.letter-cat .cat-svg{height:180px}
-.footer{flex-direction:column;align-items:start;line-height:1.8}.empty-crew .cat-svg{width:110px;margin:0 -13px}.empty h3{font-size:27px}}
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+:root{
+  color-scheme:light;
+  --bg:#fff9ec;--ink:#35413d;--muted:#79837c;--line:#dfdfcf;
+  --peach:#ffc8b3;--pink:#ffdee0;--mint:#dcefe5;--lavender:#e8e1f5;
+  --yellow:#fff0bc;--paper:#fffef8;--pixel-shadow:#d0d6c9;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;background-color:var(--bg);background-image:radial-gradient(#e8dfc9 1px,transparent 1px);background-size:21px 21px;-webkit-font-smoothing:antialiased}
+button,textarea,input{font:inherit}a{color:inherit}button{cursor:pointer}
+:focus-visible{outline:3px dashed #ad6f65;outline-offset:4px}::selection{background:#f9caaf}
+.skip{position:absolute;left:15px;top:-100px;padding:12px;background:white;z-index:99}.skip:focus{top:12px}
+.wrap{width:min(1020px,calc(100% - 48px));margin:auto}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:29px 0 19px;border-bottom:2px solid #c9d2c7}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none;font-family:ui-monospace,Consolas,monospace;font-size:14px;font-weight:900;letter-spacing:-.03em}
+.logo-icon{width:32px;height:32px;display:inline-grid;place-items:center;background:#ffcabb;border:2px solid var(--ink);box-shadow:3px 3px 0 #b5bdb0}
+.logo-icon svg{width:22px;height:22px;image-rendering:pixelated}
+.back{font-size:12px;font-weight:700;text-decoration:none;border-bottom:2px solid transparent;padding-bottom:3px}
+.back:hover{border-color:currentColor}
+.hero{text-align:center;padding:69px 0 14px}
+.mini-label{display:inline-flex;align-items:center;gap:9px;padding:9px 14px;background:#edf3e3;border:2px solid #99b2a4;font-family:ui-monospace,Consolas,monospace;font-size:11px;font-weight:800;letter-spacing:.08em}
+.status-dot{height:9px;width:9px;background:#74b294;border:1px solid #4d8270;box-shadow:2px 2px 0 #bddcca}
+h1{font-family:ui-monospace,"Lucida Console",Consolas,monospace;font-size:clamp(35px,5.45vw,68px);letter-spacing:-.075em;line-height:1.14;margin:27px auto 15px;font-weight:900}
+h1 .hi{color:#d88172}
+.sub{color:#77837b;line-height:1.8;max-width:550px;margin:0 auto;font-size:14px}
+.cats{position:relative;display:flex;align-items:flex-end;justify-content:center;gap:2px;height:188px;margin:14px auto 7px}
+.cat-mascot{display:grid;place-items:end center;width:min(27vw,170px);height:175px;transition:transform .18s}
+.cat-mascot:hover{transform:translateY(-8px) rotate(-2deg)}
+.cat-mascot:nth-child(2){width:min(29vw,194px);height:185px;transform:translateY(6px)}
+.cat-mascot:nth-child(2):hover{transform:translateY(-2px)}
+.pixel-cat{display:block;width:100%;max-width:180px;aspect-ratio:1;image-rendering:pixelated;shape-rendering:crispEdges;filter:drop-shadow(0 7px 0 #b2bbad61)}
+.float-heart{position:absolute;font:900 25px ui-monospace,monospace;color:#da9c97;pointer-events:none;user-select:none}
+.heart-one{left:calc(50% - 195px);top:26px}.heart-two{right:calc(50% - 194px);top:66px;color:#c4a7d0;font-size:20px}
+.postbox{position:relative;background:var(--paper);border:3px solid var(--ink);box-shadow:8px 8px 0 var(--pixel-shadow);max-width:725px;margin:18px auto 0;padding:34px 37px;text-align:left}
+.postbox:before{content:"";position:absolute;left:21px;right:21px;top:0;border-top:8px solid #f7d3bd}
+.box-heading{display:flex;gap:18px;justify-content:space-between;align-items:start;margin-bottom:23px}
+.box-heading h2{font:900 20px/1.4 ui-monospace,Consolas,monospace;letter-spacing:-.04em;margin:0}
+.box-heading .note-stamp{font-size:10px;font-weight:900;color:#9f8778;border:2px dashed #dcad9a;padding:7px;white-space:nowrap;transform:rotate(5deg)}
+.form-row{display:grid;grid-template-columns:1fr;gap:20px}
+.field label{display:block;font-size:12px;font-weight:800;margin-bottom:9px}.field label span{color:#939b94;font-size:11px;font-weight:500}
+.field input,.field textarea{width:100%;border:2px solid #ced6ca;background:#fcfdf8;color:var(--ink);border-radius:0;padding:13px 15px;font-size:14px;outline:0}
+.field input:focus,.field textarea:focus{border-color:#789c89;box-shadow:3px 3px 0 #d0e1d4}
+.field input::placeholder,.field textarea::placeholder{color:#a0aaa2}
+.field textarea{min-height:115px;line-height:1.8;resize:vertical}
+.count{font:700 11px ui-monospace,Consolas,monospace;text-align:right;color:#9da89e;margin-top:7px}
+.send-line{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-top:21px}
+.send-help{font-size:11px;line-height:1.7;color:#90998e;max-width:310px}
+.send-help strong{color:#637b6b}
+.send{display:inline-flex;gap:12px;align-items:center;justify-content:center;white-space:nowrap;background:#f8c7b2;color:#3c4640;border:3px solid #3c4640;padding:13px 21px;font:900 13px ui-monospace,Consolas,monospace;box-shadow:5px 5px 0 #c2cbbd;transition:transform .14s,box-shadow .14s}
+.send:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #c2cbbd}
+.send:active{transform:translate(3px,3px);box-shadow:2px 2px 0 #c2cbbd}
+.form-status{font-size:12px;line-height:1.7;min-height:19px;color:#537a66;margin-top:20px}
+.wall{max-width:900px;margin:87px auto 90px}
+.wall-head{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:23px}
+.wall-title{font:900 clamp(22px,4vw,34px) ui-monospace,Consolas,monospace;letter-spacing:-.05em;margin:0 0 5px}
+.wall-subtitle{margin:0;color:#7d8a80;font-size:12px;line-height:1.7}
+.refresh{border:2px solid #aab7ac;background:#f8faf2;color:#566d5e;font:800 11px ui-monospace,monospace;padding:11px 14px;box-shadow:3px 3px 0 #d0d9cc}
+.refresh:hover{background:#ecf4e9}.refresh:disabled{opacity:.65;cursor:wait}
+.messages{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}
+.letter{display:grid;grid-template-columns:94px minmax(0,1fr);gap:14px;background:var(--paper);border:2px solid #899e8e;box-shadow:5px 5px 0 #d2d6c6;padding:17px;min-height:163px}
+.letter.cat-0{background:#fff9f3}.letter.cat-1{background:#f7faf1}.letter.cat-2{background:#faf5fc}.letter.cat-3{background:#fffaf0}
+.letter-img{width:93px;align-self:start;background:#fff0d7;border:2px dashed #e5cfb1;padding:6px;display:grid;place-items:center}
+.letter-img svg{width:76px;height:76px}
+.letter-body{min-width:0;display:flex;flex-direction:column;gap:7px}
+.letter-name{font-weight:900;font-size:13px;overflow-wrap:anywhere}
+.letter-text{margin:0;font-size:12px;line-height:1.65;color:#637269;white-space:pre-wrap;overflow-wrap:anywhere;max-height:145px;overflow-y:auto}
+.letter-meta{font-size:10px;color:#949e95;display:flex;justify-content:space-between;align-items:end;flex-wrap:wrap;gap:7px;margin-top:auto}
+.letter-meta a{color:#537664;text-decoration:underline;text-underline-offset:3px}
+.empty{grid-column:1/-1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:39px 20px 42px;border:2px dashed #b5c5b5;background:#fffdf7;min-height:195px}
+.empty .pixel-cat{max-width:88px}
+.empty strong{font:900 16px ui-monospace,monospace;margin:12px 0}
+.empty p{color:#8f9b90;font-size:12px;line-height:1.7;margin:0}
+footer{border-top:2px solid #d8dfd4;text-align:center;color:#98a095;padding:27px 0 36px;font-size:11px;line-height:1.6}
+footer a{text-decoration:underline;text-underline-offset:3px}
+@media(max-width:740px){.wrap{width:calc(100% - 28px)}.topbar{padding:20px 0 14px}.logo{font-size:12px}
+.hero{padding-top:45px}h1{font-size:clamp(35px,8vw,53px)}.cats{height:146px;margin-top:10px}.cat-mascot{height:138px}.cat-mascot:nth-child(2){height:150px}
+.heart-one{left:10%;top:14px}.heart-two{right:11%;top:39px}
+.postbox{padding:27px 19px 22px;box-shadow:5px 5px 0 var(--pixel-shadow);margin:15px 3px 0}
+.box-heading h2{font-size:17px}.send-line{flex-direction:column;align-items:stretch;gap:16px}.send-help{max-width:none}.send{width:100%}
+.wall{margin:67px 2px 66px}.messages{grid-template-columns:1fr}.wall-title{font-size:25px}.refresh{font-size:10px;padding:9px}
+}
+@media(max-width:380px){.logo span:last-child{max-width:170px;white-space:normal}.postbox{padding-inline:14px}.letter{grid-template-columns:70px 1fr;padding:12px;gap:9px}.letter-img{width:67px}.letter-img svg{width:50px;height:50px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<a href="#letter-form" class="skip-link">Skip to the guestbook form</a>
-<div class="shell">
-<header>
-<a href="../" class="brand" aria-label="Shuofei Zan home"><span class="brand-paw" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#a56d56"><ellipse cx="12" cy="16" rx="6" ry="5"/><circle cx="4.5" cy="9" r="2"/><circle cx="10" cy="6" r="2"/><circle cx="16.5" cy="6.5" r="2"/><circle cx="21" cy="11" r="2"/></svg></span> THE CAT MAIL CLUB <small>by Shuofei</small></a>
-<nav class="nav" aria-label="Site navigation"><a href="#how">How it works</a><a href="#letters">Cat letters</a><a href="../">Portfolio ↗</a><a href="#letter-form" class="nav-cta">Leave a meow ↗</a></nav>
+<a href="#guestbook-form" class="skip">Skip to the guestbook</a>
+<div class="wrap">
+<header class="topbar">
+<a class="logo" href="../" aria-label="Back to Shuofei Zan portfolio">
+<span class="logo-icon" aria-hidden="true"><svg viewBox="0 0 22 22" shape-rendering="crispEdges"><path fill="#35413d" d="M6 4h3v3H6zm7 0h3v3h-3zM3 9h3v3H3zm13 0h3v3h-3zM6 12h10v7H6z"/><path fill="#fff0e6" d="M9 14h4v2H9z"/></svg></span>
+<span>SHUOFEI'S CAT POSTBOX</span>
+</a>
+<a class="back" href="../">← Portfolio</a>
 </header>
 <main>
-<section class="hero" aria-labelledby="hero-title">
-<div>
-<div class="eyebrow">A tiny corner of the internet · 猫猫留言邮局</div>
-<h1 id="hero-title">Every hello deserves a little <em>meow.</em></h1>
-<p class="hero-description">Welcome to my little cat mail club. Pick a kitty, leave a note, and add a new furry friend to this cozy corner of my design and research portfolio.</p>
-<div class="hero-actions"><a class="button-primary" href="#letter-form">SEND A CAT-LETTER &nbsp; ↗</a><a class="simple-link" href="#letters">MEET THE CATS &nbsp; ↓</a></div>
-<div class="hero-note"><span></span> An experimental little guestbook · no database required</div>
-</div>
-<div>
-<div class="hero-art" id="hero-art">
- <span class="float-star star-one" aria-hidden="true">✳</span><span class="float-star star-two" aria-hidden="true">✦</span><span class="float-star star-three" aria-hidden="true">✳</span>
- <div class="blob" aria-hidden="true"></div><div class="hero-bubble" id="bubble">pspsps... ♡</div>
- <button class="hero-cat-button" type="button" id="pet-cat" aria-label="Pet the big cat" title="Click to pet!"><span id="hero-cat"></span></button>
- <div class="hero-sticker">100% friendly<br>↓ tap to pet</div>
-</div>
-<div class="purr-count" id="purr-count" aria-live="polite">Click the kitty to send some love ♡</div>
+<section class="hero" aria-labelledby="main-title">
+<div class="mini-label"><span class="status-dot" aria-hidden="true"></span> PIXEL CAT GUESTBOOK · 留言板</div>
+<h1 id="main-title">Leave a little <span class="hi">meow</span> ♡</h1>
+<p class="sub">A tiny guestbook for kind notes, curious ideas and little hellos. The cats will keep your message safe. 🐾</p>
+<div class="cats" aria-hidden="true">
+<span class="float-heart heart-one">♥</span><span class="float-heart heart-two">✦</span>
+<div class="cat-mascot" id="cat-one"></div><div class="cat-mascot" id="cat-two"></div><div class="cat-mascot" id="cat-three"></div>
 </div>
 </section>
-<div class="strip" aria-label="Guestbook features"><span>✿ Pick a cat</span><span class="dot"></span><span>✿ Write a note</span><span class="dot"></span><span>✿ Send via GitHub</span><span class="dot"></span><span>✿ Join the cat club</span></div>
-<section class="section" id="how" aria-labelledby="how-title">
-<div class="section-top"><div class="section-kicker">01 / LETTER WRITING STATION</div><h2 id="how-title">Adopt a little messenger.</h2><p>Every message arrives with its own cat. Make yours sleepy, curious, or cheerful — a tiny friend to carry your words.</p></div>
-<div class="composer">
-<form class="form-card" id="letter-form">
-<div class="form-grid">
-<div class="field-group"><label for="visitor-name">YOUR NAME <small>(optional)</small></label><input class="input" id="visitor-name" maxlength="28" placeholder="e.g. Alex" autocomplete="name"></div>
-<div class="field-group"><label for="cat-name">NAME YOUR CAT <small>(optional)</small></label><input class="input" id="cat-name" maxlength="24" placeholder="e.g. Mochi"></div>
+<section class="postbox" aria-labelledby="form-title">
+<div class="box-heading"><h2 id="form-title">✉ WRITE A LITTLE LETTER</h2><span class="note-stamp" aria-hidden="true">CAT MAIL<br>★ ♥ ★</span></div>
+<form id="guestbook-form" method="get" action="https://github.com/Adele0302/shuofei-zan-design-portfolio/issues/new" target="_blank">
+<input type="hidden" name="title" id="issue-title">
+<input type="hidden" name="body" id="issue-body">
+<div class="form-row">
+<div class="field"><label for="visitor-name">Your name <span>(optional)</span></label><input id="visitor-name" maxlength="30" autocomplete="name" placeholder="How should the cats call you?"></div>
+<div class="field"><label for="message">Your message</label><textarea id="message" maxlength="280" minlength="1" placeholder="Write a hello, a question, or a little note..." required></textarea><div class="count" id="char-count">0 / 280</div></div>
 </div>
-<div class="field-group"><span class="field-legend" id="coat-label">01 — PICK A COAT</span><div class="choices" id="coat-choices" role="group" aria-labelledby="coat-label">
-<button type="button" class="coat-button" data-coat="ginger" aria-pressed="true" style="--coat:#e5a069"><span class="coat-dot"></span>Ginger</button>
-<button type="button" class="coat-button" data-coat="tuxedo" aria-pressed="false" style="--coat:#44494a"><span class="coat-dot"></span>Tuxedo</button>
-<button type="button" class="coat-button" data-coat="calico" aria-pressed="false" style="--coat:#daa275"><span class="coat-dot"></span>Calico</button>
-<button type="button" class="coat-button" data-coat="silver" aria-pressed="false" style="--coat:#adb4b7"><span class="coat-dot"></span>Silver</button>
-<button type="button" class="coat-button" data-coat="cream" aria-pressed="false" style="--coat:#edd7ab"><span class="coat-dot"></span>Cream</button>
-<button type="button" class="coat-button" data-coat="lilac" aria-pressed="false" style="--coat:#b3a3c7"><span class="coat-dot"></span>Lilac</button>
-</div></div>
-<div class="field-group"><span class="field-legend" id="mood-label">02 — CHOOSE THEIR MOOD</span><div class="choices" role="group" id="mood-choices" aria-labelledby="mood-label">
-<button type="button" class="mood-button" data-mood="happy" aria-pressed="true">☺ Happy</button>
-<button type="button" class="mood-button" data-mood="sleepy" aria-pressed="false">☾ Sleepy</button>
-<button type="button" class="mood-button" data-mood="curious" aria-pressed="false">✧ Curious</button>
-</div></div>
-<div class="field-group"><label for="message">03 — WRITE YOUR LITTLE LETTER</label><textarea class="input" id="message" maxlength="280" rows="4" placeholder="A hello, a thought, a research question, or a collaboration idea…" required></textarea><div class="message-counter"><span id="counter">0</span> / 280 characters</div></div>
-<div class="send-row"><div class="help">Clicking below opens a prefilled <strong>public GitHub Issue</strong>. You'll need to sign in and click Submit there to publish. Nothing is posted automatically.</div><button type="submit" class="button-primary">SEND MY CAT-LETTER &nbsp; ↗</button></div>
+<div class="send-line">
+<p class="send-help">Posting opens a <strong>public GitHub Issue</strong> in a new tab. A GitHub account is required; your message is published only after you confirm there.</p>
+<button class="send" type="submit">SEND LETTER <span aria-hidden="true">↗</span></button>
+</div>
+<div id="form-status" class="form-status" role="status" aria-live="polite"></div>
 </form>
-<aside class="preview-card" aria-label="Live preview of your chosen cat">
-<div class="preview-header"><span>YOUR LITTLE MESSENGER</span><span>♡ 001 / CAT MAIL</span></div>
-<div class="preview-cat" id="preview-cat" aria-hidden="true"></div>
-<div class="preview-bottom"><h3 id="preview-name">Meet Mochi!</h3><p id="preview-description">One cheerful ginger cat, ready to deliver your note.</p></div>
-</aside>
-</div>
+</section>
+<section class="wall" aria-labelledby="wall-title">
+<div class="wall-head"><div><h2 class="wall-title" id="wall-title">♡ Little letters <span id="total-count" aria-label="number of letters"></span></h2><p class="wall-subtitle">Real visitor messages, guarded by very serious pixel cats.</p></div><button type="button" class="refresh" id="refresh">↻ REFRESH</button></div>
+<div class="messages" id="messages" aria-live="polite"><div class="empty"><strong>Checking the mailbox…</strong><p>Collecting new letters from GitHub.</p></div></div>
 </section>
 </main>
+<footer>Made with ♡ by Shuofei Zan · <a href="https://github.com/Adele0302/shuofei-zan-design-portfolio" target="_blank" rel="noopener noreferrer">Source on GitHub ↗</a></footer>
 </div>
-<section class="cat-wall" id="letters" aria-labelledby="letters-title">
-<div class="shell">
-<div class="wall-heading"><div><div class="section-kicker">02 / THE CAT CLUB</div><h2 id="letters-title">The cat mail wall<span style="color:#dba181">.</span></h2></div><p class="wall-description">Each real letter becomes a tiny cat you can visit. Tap on a cat to read the message it carries.</p></div>
-<div class="controls">
-<div class="filters" role="group" aria-label="Filter cat letters by mood">
-<button type="button" class="filter" data-filter="all" aria-pressed="true">All the cats</button>
-<button type="button" class="filter" data-filter="happy" aria-pressed="false">☺ Happy</button>
-<button type="button" class="filter" data-filter="sleepy" aria-pressed="false">☾ Sleepy</button>
-<button type="button" class="filter" data-filter="curious" aria-pressed="false">✧ Curious</button>
-</div>
-<div class="wall-tools"><span id="wall-status" role="status" aria-live="polite">Checking for mail…</span><button class="refresh" id="refresh" type="button">↻ Refresh</button></div>
-</div>
-<div class="cat-grid" id="cat-grid" aria-live="polite"></div>
-</div>
-</section>
-<div class="shell">
-<footer class="footer"><span>© <span id="year">2026</span> Shuofei Zan · A tiny side project, made with care and curiosity.</span><span><a href="../">Back to the portfolio ↗</a> &nbsp; · &nbsp; <a href="https://github.com/Adele0302/shuofei-zan-design-portfolio" target="_blank" rel="noopener noreferrer">View source on GitHub ↗</a></span></footer>
-</div>
-<dialog id="letter-dialog" aria-label="Cat letter">
-<div class="letter">
-<div class="letter-top"><div class="letter-label">✉ A LITTLE LETTER FOR YOU</div><button type="button" class="close-dialog" id="close-dialog" aria-label="Close letter">×</button></div>
-<div class="letter-cat" id="dialog-cat" aria-hidden="true"></div>
-<h3 id="dialog-title">A new letter</h3>
-<p class="letter-message" id="dialog-message"></p>
-<div class="letter-foot"><span id="dialog-from"></span><a id="dialog-source" target="_blank" rel="noopener noreferrer" href="https://github.com/Adele0302/shuofei-zan-design-portfolio/issues">Read on GitHub ↗</a></div>
-</div>
-</dialog>
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script>
 (function(){
 'use strict';
-const repo='Adele0302/shuofei-zan-design-portfolio';
-const issuesEndpoint='https://api.github.com/repos/'+repo+'/issues?state=open&sort=created&direction=desc&per_page=100';
-const choices={
- ginger:{name:'Ginger',fur:'#E6A36F',inner:'#F5C3AB',stripe:'#C8814C',patch:'#F5C68F',belly:'#FCE6C8',eye:'#393E3A'},
- tuxedo:{name:'Tuxedo',fur:'#51575A',inner:'#B27C85',stripe:'#32393D',patch:'#FCF7ED',belly:'#FCF7ED',eye:'#2F3536'},
- calico:{name:'Calico',fur:'#FFF0D9',inner:'#EBA5A1',stripe:'#C78459',patch:'#D08F61',belly:'#FFF8EA',eye:'#3F4641'},
- silver:{name:'Silver',fur:'#ACB5B6',inner:'#E8BEC3',stripe:'#7C949C',patch:'#E3E6E2',belly:'#E8EFEB',eye:'#374550'},
- cream:{name:'Cream',fur:'#EDD9B4',inner:'#EDB6A9',stripe:'#D9BA91',patch:'#FBF0D6',belly:'#FFF2DA',eye:'#58504B'},
- lilac:{name:'Lilac',fur:'#B8A9CA',inner:'#EAC0D4',stripe:'#9787B1',patch:'#DDCDE2',belly:'#EBE2F0',eye:'#47414D'}
-};
-const moodLabels={happy:'cheerful',sleepy:'sleepy',curious:'curious'};
-const moodEmoji={happy:'☺',sleepy:'☾',curious:'✧'};
-const pastGlazes={celadon:'cream',ink:'silver',ivory:'cream',amber:'ginger'};
-const $=id=>document.getElementById(id);
-const reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-let coat='ginger',mood='happy',filter='all',notes=[],toastTimer,petCount=0,loaded=false;
-function catSVG(inputCoat,inputMood){
- const c=Object.prototype.hasOwnProperty.call(choices,inputCoat)?choices[inputCoat]:choices.ginger;
- const safeMood=Object.prototype.hasOwnProperty.call(moodLabels,inputMood)?inputMood:'happy';
- const stripes=inputCoat==='ginger'||inputCoat==='silver';
- const calico=inputCoat==='calico';
- const tuxedo=inputCoat==='tuxedo';
- const eyes=safeMood==='sleepy'
-  ? '<path d="M88 132 Q102 140 114 130 M146 130 Q160 140 174 132" fill="none" stroke="'+c.eye+'" stroke-width="5" stroke-linecap="round"/>'
-  :safeMood==='curious'
-  ? '<ellipse cx="102" cy="129" rx="6" ry="10" fill="'+c.eye+'"/><ellipse cx="162" cy="129" rx="7" ry="11" fill="'+c.eye+'"/><circle cx="103" cy="125" r="2.4" fill="#fff"/><circle cx="163" cy="125" r="2.4" fill="#fff"/>'
-  : '<path d="M90 131 Q102 118 114 131 M149 131 Q161 118 174 131" fill="none" stroke="'+c.eye+'" stroke-width="5" stroke-linecap="round"/>';
- const pattern=stripes?'<path d="M118 78 L127 96 L135 78 M94 88 L98 103 M159 88 L155 103" stroke="'+c.stripe+'" stroke-width="7" stroke-linecap="round" opacity=".65" fill="none"/>':'';
- const headPatch=calico?'<path d="M62 98 Q57 61 91 63 Q104 67 111 86 Q91 108 62 111Z" fill="#D39B6B" opacity=".95"/><path d="M156 73 Q191 52 200 98 L198 106 Q180 116 162 98Z" fill="#66605D" opacity=".93"/>':tuxedo?'<path d="M120 72 Q131 84 142 72 L143 115 Q131 127 120 115Z" fill="#FCF7ED"/>':'';
- const cheekPatch=calico?'<ellipse cx="180" cy="153" rx="20" ry="16" fill="#DDAB77" opacity=".62"/>':'';
- return '<svg class="cat-svg" viewBox="0 0 264 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="'+c.name+' '+safeMood+' illustrated cat">'+
- '<path d="M184 202 Q254 205 227 128 Q220 109 209 115" stroke="'+c.stripe+'" stroke-width="26" stroke-linecap="round" fill="none"/>'+
- '<path d="M184 202 Q249 200 227 137" stroke="'+c.fur+'" stroke-width="16" stroke-linecap="round" fill="none"/>'+
- '<ellipse cx="133" cy="201" rx="76" ry="62" fill="'+c.fur+'"/>'+
- '<ellipse cx="130" cy="204" rx="42" ry="47" fill="'+c.belly+'"/>'+
- '<path d="M55 111 L59 53 Q61 25 82 46 L106 75 Q134 63 157 75 L181 46 Q202 25 206 56 L211 115 Q213 191 134 194 Q49 188 55 111Z" fill="'+c.fur+'"/>'+
- '<path d="M70 78 L72 52 Q74 46 82 56 L96 77Z M171 77 L187 55 Q194 45 196 57 L197 83Z" fill="'+c.inner+'"/>'+
- headPatch+pattern+cheekPatch+
- '<ellipse cx="91" cy="155" rx="15" ry="9" fill="#EFABAB" opacity=".42"/><ellipse cx="176" cy="155" rx="15" ry="9" fill="#EFABAB" opacity=".42"/>'+
- eyes+
- '<path d="M128 145 Q133 142 139 145 L134 153Z" fill="#A36B72"/>'+
- '<path d="M134 153 Q131 161 124 160 M134 153 Q138 161 145 159" stroke="'+c.eye+'" stroke-width="2.5" stroke-linecap="round" fill="none"/>'+
- '<path d="M86 153 L54 148 M85 160 L53 163 M183 153 L215 148 M183 160 L215 163" stroke="'+c.stripe+'" stroke-width="2.5" opacity=".65" stroke-linecap="round"/>'+
- '<ellipse cx="99" cy="245" rx="25" ry="14" fill="'+c.fur+'"/><ellipse cx="163" cy="245" rx="25" ry="14" fill="'+c.fur+'"/>'+
- '<path d="M89 249 L89 257 M101 251 L101 258 M153 250 L153 258 M166 249 L166 257" stroke="'+c.stripe+'" stroke-width="2" opacity=".5" stroke-linecap="round"/>'+
- '<path d="M114 184 Q134 199 154 184" fill="none" stroke="'+c.stripe+'" stroke-width="3" opacity=".3"/>'+
- '<path d="M105 185 Q131 196 159 185" stroke="#B96D6A" stroke-width="7" fill="none" stroke-linecap="round"/>'+
- '<circle cx="133" cy="191" r="6" fill="#F3D58D" stroke="#B38857" stroke-width="1.5"/>'+
- '</svg>';
+const repository='Adele0302/shuofei-zan-design-portfolio';
+const api='https://api.github.com/repos/'+repository+'/issues?state=open&sort=created&direction=desc&per_page=100';
+const colors=[
+ {fur:'#e8a66f',inner:'#f5d0bd',belly:'#fbedcc',mark:'#c78656',eyes:'#3b4641',tail:'#d28a59'},
+ {fur:'#4b5456',inner:'#ecbcb9',belly:'#fff3da',mark:'#30383a',eyes:'#374243',tail:'#394345'},
+ {fur:'#b4b3cd',inner:'#efd3e3',belly:'#f1e9f7',mark:'#8c91b1',eyes:'#3e4550',tail:'#858aab'},
+ {fur:'#e3d8b2',inner:'#edb7b0',belly:'#fcf4d8',mark:'#ccb88a',eyes:'#3c4540',tail:'#d5c594'}
+];
+const ns='http://www.w3.org/2000/svg';
+const byId=id=>document.getElementById(id);
+function pixelCat(index){
+ const c=colors[((Number(index)||0)%colors.length+colors.length)%colors.length];
+ const pixels=[];
+ const rect=(x,y,w,h,color)=>pixels.push('<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="'+color+'"/>');
+ const ink='#39443d';
+ // Tail, ears and body are built from integer-sized pixel blocks, not vector curves or raster imagery.
+ rect(25,17,3,9,ink);rect(27,14,3,7,ink);rect(26,15,2,6,c.tail);rect(25,21,2,4,c.fur);
+ rect(8,19,18,11,ink);rect(9,20,16,9,c.fur);
+ rect(11,21,12,8,c.belly);
+ rect(6,4,6,11,ink);rect(7,5,4,9,c.fur);rect(8,7,2,5,c.inner);
+ rect(20,4,6,11,ink);rect(21,5,4,9,c.fur);rect(22,7,2,5,c.inner);
+ rect(5,10,22,13,ink);rect(6,11,20,11,c.fur);
+ rect(13,10,6,3,c.mark);rect(11,12,2,2,c.mark);rect(19,12,2,2,c.mark);
+ if(index%4===1){rect(12,19,8,4,c.belly);rect(11,15,3,4,c.belly);rect(18,15,3,4,c.belly);}
+ if(index%4===2){rect(6,12,5,5,c.mark);rect(22,11,4,5,c.belly);}
+ if(index%4===3){rect(9,14,4,3,c.belly);rect(20,13,4,3,c.belly);}
+ rect(10,16,3,3,c.eyes);rect(20,16,3,3,c.eyes);
+ rect(11,16,1,1,'#fffef1');rect(21,16,1,1,'#fffef1');
+ rect(14,18,4,2,c.inner);rect(16,20,1,1,ink);rect(14,21,2,1,ink);rect(17,21,2,1,ink);
+ rect(7,19,3,1,c.mark);rect(23,19,3,1,c.mark);
+ rect(9,27,6,4,ink);rect(10,28,4,2,c.fur);rect(19,27,6,4,ink);rect(20,28,4,2,c.fur);
+ return '<svg class="pixel-cat" viewBox="0 0 32 32" xmlns="'+ns+'" shape-rendering="crispEdges" aria-hidden="true">'+pixels.join('')+'</svg>';
 }
-function setCat(id,co,mo){const host=$(id);host.innerHTML=catSVG(co,mo);}
-function updatePreview(){
- setCat('preview-cat',coat,mood);
- const name=$('cat-name').value.trim()||'Mochi';
- $('preview-name').textContent='Meet '+name+'!';
- $('preview-description').textContent='One '+moodLabels[mood]+' '+choices[coat].name.toLowerCase()+' cat, ready to deliver your note.';
-}
-function choose(kind,value){
- if(kind==='coat'){coat=value;}else{mood=value;}
- document.querySelectorAll('[data-'+kind+']').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset[kind]===value)));
- updatePreview();
-}
-document.querySelectorAll('[data-coat]').forEach(b=>b.addEventListener('click',()=>choose('coat',b.dataset.coat)));
-document.querySelectorAll('[data-mood]').forEach(b=>b.addEventListener('click',()=>choose('mood',b.dataset.mood)));
-$('cat-name').addEventListener('input',updatePreview);
-$('message').addEventListener('input',()=>{$('counter').textContent=String($('message').value.length);});
-function toast(text){$('toast').textContent=text;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),5900);}
-function heroPet(){
- petCount+=1;
- const sayings=['prrrr... ♡','meow!','head bonk ♡','more pets?','purrrfect!'];$('bubble').textContent=sayings[petCount%5];
- $('purr-count').textContent=petCount===1?'1 pet delivered! ♡':petCount+' pets delivered! ♡';
- if(!reduceMotion){
-  const star=document.createElement('span');star.className='halo-heart';star.textContent=petCount%2?'♥':'♡';
-  star.style.left=(32+(petCount*13)%40)+'%';star.style.top=(29+(petCount*7)%23)+'%';
-  $('hero-art').append(star);star.addEventListener('animationend',()=>star.remove(),{once:true});
- }
-}
-$('pet-cat').addEventListener('click',heroPet);
-$('year').textContent=String(new Date().getFullYear());
-setCat('hero-cat','ginger','happy');updatePreview();
-$('letter-form').addEventListener('submit',function(e){
- e.preventDefault();
- const from=$('visitor-name').value.trim().replace(/[\r\n]+/g,' ').slice(0,28)||'A visitor';
- const friend=$('cat-name').value.trim().replace(/[\r\n]+/g,' ').slice(0,24)||'Mochi';
- const words=$('message').value.trim().slice(0,280);
- if(!words){$('message').focus();return;}
- const title='[Catbook] '+from+' sent '+friend;
- const body='<!-- zan-catbook:v2 -->\nFrom: '+from+'\nCat: '+friend+'\nCoat: '+coat+'\nMood: '+mood+'\nMessage:\n'+words+'\n<!-- end-zan-catbook -->\n\n---\nThis is a public guestbook letter. Publishing this Issue shares the note and author name on GitHub.';
- const url='https://github.com/'+repo+'/issues/new?title='+encodeURIComponent(title)+'&body='+encodeURIComponent(body);
- const link=document.createElement('a');link.href=url;link.target='_blank';link.rel='noopener noreferrer';document.body.append(link);link.click();link.remove();
- toast('Your cat-letter is ready! Please finish posting on GitHub. Come back and refresh the wall afterward.');
+byId('cat-one').innerHTML=pixelCat(2);
+byId('cat-two').innerHTML=pixelCat(0);
+byId('cat-three').innerHTML=pixelCat(1);
+byId('message').addEventListener('input',()=>{
+ byId('char-count').textContent=String(byId('message').value.length)+' / 280';
+});
+byId('guestbook-form').addEventListener('submit',function(event){
+ const content=byId('message').value.trim().slice(0,280);
+ if(!content){event.preventDefault();byId('message').focus();return;}
+ const name=byId('visitor-name').value.trim().replace(/[\r\n]+/g,' ').slice(0,30)||'A visitor';
+ const title='[Pixel Catbook] '+name;
+ const body='<!-- zan-pixel-catbook:v3 -->\nName: '+name+'\nMessage:\n'+content+'\n<!-- end-zan-pixel-catbook -->\n\n---\nPosted using Shuofei Zan’s public Pixel Cat Guestbook. The author confirms publication on GitHub.';
+ byId('issue-title').value=title;
+ byId('issue-body').value=body;
+ byId('form-status').textContent='Almost there! Complete the new Issue on GitHub, then return and refresh the letters.';
+ // Native GET form submission opens GitHub; no message is saved until the visitor posts the Issue.
 });
 function parseIssue(issue){
- if(!issue||issue.pull_request||typeof issue.title!=='string'||!issue.body)return null;
+ if(!issue||issue.pull_request||typeof issue.title!=='string'||typeof issue.body!=='string')return null;
  const body=issue.body.replace(/\r/g,'');
- let from,cat,co,mo,msg;
- if(issue.title.startsWith('[Catbook] ')){
-  const match=body.match(/<!-- zan-catbook:v2 -->\s*\nFrom: ([^\n]+)\nCat: ([^\n]+)\nCoat: ([^\n]+)\nMood: ([^\n]+)\nMessage:\n([\s\S]*?)\n<!-- end-zan-catbook -->/);
-  if(!match)return null;[from,cat,co,mo,msg]=match.slice(1);
+ let name,message;
+ if(issue.title.startsWith('[Pixel Catbook] ')){
+  const m=body.match(/<!-- zan-pixel-catbook:v3 -->\s*\nName: ([^\n]+)\nMessage:\n([\s\S]*?)\n<!-- end-zan-pixel-catbook -->/);
+  if(!m)return null;name=m[1];message=m[2];
+ }else if(issue.title.startsWith('[Catbook] ')){
+  const m=body.match(/<!-- zan-catbook:v2 -->\s*\nFrom: ([^\n]+)\nCat: ([^\n]+)\nCoat: ([^\n]+)\nMood: ([^\n]+)\nMessage:\n([\s\S]*?)\n<!-- end-zan-catbook -->/);
+  if(!m)return null;name=m[1];message=m[5];
  }else if(issue.title.startsWith('[Guestbook] ')){
-  const match=body.match(/<!-- zan-guestbook:v1 -->\s*\nName: ([^\n]+)\nGlaze: ([^\n]+)\nMessage:\n([\s\S]*?)\n<!-- end-zan-guestbook -->/);
-  if(!match)return null;from=match[1];cat='Little Bean';co=pastGlazes[match[2]]||'cream';mo='happy';msg=match[3];
+  const m=body.match(/<!-- zan-guestbook:v1 -->\s*\nName: ([^\n]+)\nGlaze: ([^\n]+)\nMessage:\n([\s\S]*?)\n<!-- end-zan-guestbook -->/);
+  if(!m)return null;name=m[1];message=m[3];
  }else return null;
- from=from.trim().slice(0,28);cat=cat.trim().slice(0,24);msg=msg.trim().slice(0,280);
- if(!from||!cat||!msg||!Object.prototype.hasOwnProperty.call(choices,co)||!Object.prototype.hasOwnProperty.call(moodLabels,mo))return null;
- const link=typeof issue.html_url==='string'&&issue.html_url.startsWith('https://github.com/'+repo+'/issues/')?issue.html_url:'https://github.com/'+repo+'/issues';
- return {from,cat,coat:co,mood:mo,message:msg,created:issue.created_at,link,number:issue.number};
+ name=name.trim().slice(0,30);message=message.trim().slice(0,280);
+ if(!name||!message)return null;
+ const url=typeof issue.html_url==='string'&&issue.html_url.startsWith('https://github.com/'+repository+'/issues/')?issue.html_url:'https://github.com/'+repository+'/issues';
+ const id=Number.isInteger(issue.number)?issue.number:0;
+ return {name,message,url,id,created:issue.created_at||''};
 }
-function element(tag,className,text){
- const e=document.createElement(tag);if(className)e.className=className;if(text!==undefined)e.textContent=text;return e;
+function node(tag,className,text){
+ const item=document.createElement(tag);
+ if(className)item.className=className;
+ if(text!==undefined)item.textContent=text;
+ return item;
 }
-function renderEmpty(isError){
- const root=$('cat-grid');root.replaceChildren();
- const box=element('div','empty');const crew=element('div','empty-crew');
- [['cream','sleepy'],['ginger','happy'],['lilac','curious']].forEach(([co,mo])=>{const s=element('span');s.innerHTML=catSVG(co,mo);crew.append(s);});
- const headline=element('h3','',isError?'The cats are taking a nap.':'A quiet little cat café.');
- const sub=element('p','',isError?'Could not reach GitHub right now. You can still write a cat-letter above, or refresh to try again.':'No public letters yet. These are just our welcome cats — be the first real visitor to send one!');
- const link=element('a','button-primary','SEND THE FIRST LETTER ↗');link.href='#letter-form';
- box.append(crew,headline,sub,link);root.append(box);
+function emptyMailbox(title,description){
+ const area=byId('messages');area.replaceChildren();
+ const div=node('div','empty');const cat=node('div');cat.innerHTML=pixelCat(2);
+ div.append(cat,node('strong','',title),node('p','',description));area.append(div);
 }
-function showNote(note){
- $('dialog-cat').innerHTML=catSVG(note.coat,note.mood);
- $('dialog-title').textContent='A note from '+note.cat;
- $('dialog-message').textContent=note.message;
- const date=note.created?new Date(note.created):null;
- const dateText=date&&!Number.isNaN(date.getTime())?date.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'';
- $('dialog-from').textContent='By '+note.from+(dateText?' · '+dateText:'');
- $('dialog-source').href=note.link;
- $('letter-dialog').showModal();
-}
-function renderWall(){
- const matches=filter==='all'?notes:notes.filter(n=>n.mood===filter);
- const root=$('cat-grid');root.replaceChildren();
- if(!loaded)return;
- if(notes.length===0){renderEmpty(false);return;}
- if(!matches.length){
-  const empty=element('div','empty');empty.append(element('h3','','No '+filter+' cats yet.'),element('p','','Try another mood, or send your own cat-letter.'));
-  root.append(empty);return;
- }
- matches.slice(0,30).forEach(note=>{
-  const card=element('button','cat-note');card.type='button';card.setAttribute('aria-label','Read the letter carried by '+note.cat+', from '+note.from);
-  const top=element('div','note-meta');
-  top.append(element('span','',String(note.number?'#'+note.number:'CAT MAIL')),element('span','mood-badge',moodEmoji[note.mood]+' '+note.mood));
-  const drawing=element('div','note-art');drawing.innerHTML=catSVG(note.coat,note.mood);
-  const name=element('div','note-name',note.cat);
-  const snippet=element('div','note-snippet','“'+note.message+'”');
-  const cta=element('div','note-cta','READ LETTER ↗');
-  card.append(top,drawing,name,snippet,cta);card.addEventListener('click',()=>showNote(note));root.append(card);
+function render(letters){
+ const area=byId('messages');area.replaceChildren();
+ byId('total-count').textContent=letters.length?'('+letters.length+')':'';
+ if(!letters.length){emptyMailbox('No letters yet ♡','Be the first person to leave a little hello.');return;}
+ letters.slice(0,24).forEach(letter=>{
+  const styleIndex=letter.id%colors.length;
+  const card=node('article','letter cat-'+styleIndex);
+  const avatar=node('div','letter-img');avatar.innerHTML=pixelCat(styleIndex);
+  const content=node('div','letter-body');
+  const author=node('div','letter-name',letter.name);
+  const msg=node('p','letter-text',letter.message);
+  const bottom=node('div','letter-meta');
+  const stamp=letter.created?new Date(letter.created):null;
+  const date=stamp&&!Number.isNaN(stamp.getTime())?stamp.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'';
+  const when=node('span','',date);
+  const source=node('a','','VIEW ↗');source.href=letter.url;source.target='_blank';source.rel='noopener noreferrer';
+  bottom.append(when,source);content.append(author,msg,bottom);card.append(avatar,content);area.append(card);
  });
 }
-document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>{
- filter=b.dataset.filter;document.querySelectorAll('[data-filter]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));renderWall();
-}));
-$('close-dialog').addEventListener('click',()=>$('letter-dialog').close());
-$('letter-dialog').addEventListener('click',e=>{if(e.target===$('letter-dialog'))$('letter-dialog').close();});
-async function loadNotes(){
- const button=$('refresh');button.disabled=true;$('wall-status').textContent='Checking for mail…';
+async function load(){
+ const refresh=byId('refresh');refresh.disabled=true;
+ emptyMailbox('Checking the mailbox…','The pixel cats are finding your letters.');
  try{
-  const response=await fetch(issuesEndpoint,{headers:{'Accept':'application/vnd.github+json'}});
-  if(!response.ok)throw Error('GitHub '+response.status);
-  const data=await response.json();if(!Array.isArray(data))throw Error('Unexpected data');
-  notes=data.map(parseIssue).filter(Boolean);
-  loaded=true;$('wall-status').textContent=notes.length+' public '+(notes.length===1?'letter':'letters');
-  renderWall();
- }catch(err){
-  loaded=false;$('wall-status').textContent='GitHub unavailable';
-  renderEmpty(true);
- }finally{button.disabled=false;}
+  const response=await fetch(api,{headers:{Accept:'application/vnd.github+json'}});
+  if(!response.ok)throw new Error('GitHub '+response.status);
+  const result=await response.json();if(!Array.isArray(result))throw new Error('Invalid response');
+  const notes=result.map(parseIssue).filter(Boolean);
+  render(notes);
+ }catch(error){
+  byId('total-count').textContent='';
+  emptyMailbox('Mailbox is resting','GitHub letters could not be loaded right now. Click Refresh to try again.');
+ }finally{refresh.disabled=false;}
 }
-$('refresh').addEventListener('click',loadNotes);
-renderEmpty(false);loadNotes();
+byId('refresh').addEventListener('click',load);
+load();
 })();
 </script>
 </body>
