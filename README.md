@@ -8,12 +8,12 @@ A curated selection of design and research work spanning **computational design*
 
 > **Viewing note:** The portfolio is hosted on Figma. The interactive viewer may take some time to load, especially on the first visit or with a slower connection. Thank you for your patience.
 
-## Glaze Notes — interactive guestbook
+## The Cat Mail Club — interactive guestbook
 
-A porcelain-inspired place for visitors to leave a note, ask a question, or start a conversation.
+A cozy interactive cat guestbook: pick a cat, leave a message, and see it join the letter wall.
 
-- [Guestbook source and preview code](docs/guestbook/index.html)
-- [Guestbook deployment guide](docs/guestbook/README.md)
+- [Cat guestbook source code](docs/guestbook/index.html)
+- [Cat guestbook deployment guide](docs/guestbook/README.md)
 - [Open the guestbook on GitHub Pages](https://adele0302.github.io/shuofei-zan-design-portfolio/guestbook/) *(available after enabling Pages from `main /docs`)*
 
 ## Selected research
