@@ -1,39 +1,51 @@
-# Glaze Notes — interactive academic guestbook
+# The Cat Mail Club — interactive cat guestbook
 
-A lightweight, porcelain-inspired guestbook for Shuofei Zan's public design research portfolio. Implemented as a static HTML/CSS/JavaScript page with GitHub Issues as the message store. No secrets, databases, tracking scripts, or third-party commenting service are needed.
+A playful, accessible cat-themed guestbook for Shuofei Zan's design and research portfolio, with original inline SVG cat illustrations and GitHub Issues as the public message store.
 
-## Publish to GitHub Pages
+## Publish on GitHub Pages
 
-1. Merge the guestbook feature pull request into `main`.
-2. Open repository **Settings → Pages**.
-3. Under **Build and deployment**, choose **Deploy from a branch**.
-4. Select **main** and the **/docs** directory, then **Save**.
-5. Once GitHub finishes publishing, open:
+This repository currently stores the static website in `docs/`. To publish:
+
+1. Open **Settings → Pages** in `Adele0302/shuofei-zan-design-portfolio`.
+2. Select **Deploy from a branch**.
+3. Select branch **main** and folder **/docs**, then save.
+4. After the Pages deployment succeeds, the URL is:
 
    https://adele0302.github.io/shuofei-zan-design-portfolio/guestbook/
 
-The `docs/index.html` page is a simple research-portfolio gateway, while `docs/guestbook/index.html` is the actual guestbook.
+The welcome page lives at `docs/index.html`. This guestbook is at `docs/guestbook/index.html`. The site's Figma portfolio and research links are unchanged.
 
-## How guestbook notes work
+## Visitor workflow
 
-- Visitors choose one of four glaze colors, optionally add a name and write a message (up to 280 characters).
-- Clicking **Sign the guestbook** opens a new GitHub Issue with prefilled content.
-- **The visitor must be signed in to GitHub and explicitly submit the Issue.** Filling the form alone does not publish anything.
-- The site loads public **open** Issues from the repository and displays only those beginning with `[Guestbook] ` and containing the versioned guestbook marker.
-- Notes are text-only and rendered with `textContent`, not HTML; this prevents arbitrary user content from becoming executable page markup.
-- A signed-in repository maintainer can hide an unwanted note from the site by **closing its Issue**. Reopening it makes the note visible again.
-- The page displays the most recent 24 matching entries from the latest 100 open Issues; large-volume use would require pagination. Anonymous submissions without GitHub sign-in are not supported.
+1. Choose one of six original cat coats: ginger, tuxedo, calico, silver, cream or lilac.
+2. Choose a mood: happy, sleepy or curious. See a live illustrated cat preview.
+3. Add an optional visitor name and cat name, plus a message (up to 280 characters).
+4. Click **Send my cat-letter**. The browser opens a **prefilled new GitHub Issue**. Visitors must sign in to GitHub and **explicitly publish** their Issue; no message is submitted by the static website.
+5. Return to the wall and refresh. Each open, matching Issue appears as a cat card. Opening a card displays a readable letter, public author attribution, date and Issue link.
 
-## Practical limitations
+A visit to the website does not require a GitHub account. **Posting does require a GitHub account.** Comments and names are publicly visible on GitHub.
 
-This is a public **Issue-backed** guestbook, not a private inbox. Usernames, the Issue body, and the publication timestamp are public on GitHub. Notes generally show when refreshed after GitHub has accepted a new Issue. The unauthenticated GitHub REST API has rate limits, and visitors may occasionally see an availability warning until the limit resets. The site does not add a moderation queue; public open messages become visible automatically. For an approval-before-display workflow, a separate reviewed content feed would be needed.
+## Moderation and compatibility
 
-The visual style is original; the GitHub Issues storage approach draws on [utterances](https://github.com/utterance/utterances). [giscus](https://github.com/giscus/giscus) is an alternative for threaded Discussion comments and reactions but requires enabling GitHub Discussions and installing the giscus app.
+- The live wall displays only matching, currently **open** Issues. To hide a public letter, close the corresponding Issue. This is not an approval-before-display queue.
+- New entries use an explicit `[Catbook]` Issue title plus a `zan-catbook:v2` comment marker and structured text fields.
+- Legacy `[Guestbook]` entries marked `zan-guestbook:v1` remain displayable as cats, so upgrading does not silently discard older notes.
+- The list uses the latest 100 open Issues from GitHub's public API, and shows up to 30 matching cats. It would require pagination for heavy traffic.
+- All visitor-controlled strings are rendered with `textContent`. SVG palettes and moods are selected from fixed whitelists.
+- The **pet the cat** animation is local-only and not persisted. No audio auto-play, visitor tracking, private tokens or external image services.
+- The design respects `prefers-reduced-motion`, supports keyboard navigation, and opens messages with the native dialog element.
 
-## Files
+## Design inspiration and independence
 
-- `docs/index.html` — compact portfolio landing page with a guestbook entry.
-- `docs/guestbook/index.html` — responsive, accessible static guestbook.
-- `docs/guestbook/README.md` — deployment and moderation instructions.
+The illustrative cat art and page layout are original SVG/CSS drawn for this project; no artwork or code is copied from the references. Useful patterns:
 
-Author: Shuofei Zan.
+- [homepage-cat](https://github.com/AsleepX/homepage-cat): lightweight draggable SVG character and reduced-motion considerations.
+- [Interactive-Cat-Pet-App](https://github.com/sulthonkk/Interactive-Cat-Pet-App): cat click feedback.
+- [utterances](https://github.com/utterance/utterances): GitHub Issues-backed public comments.
+- [giscus](https://github.com/giscus/giscus): alternative based on GitHub Discussions, should threading and reactions be required.
+
+## Limitations
+
+GitHub API rate limits may temporarily prevent unauthenticated reads, in which case visitors can refresh later. Links open in a separate tab, and publishing is completed on GitHub (not inline). Malicious content is displayed as plain text, but unwanted legitimate messages can still appear until manually closed. For anonymous writing, an external hosted forms service and abuse-prevention system would be necessary.
+
+This static site has no backend and can run on GitHub Pages without build tooling.
