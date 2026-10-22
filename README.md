@@ -8,6 +8,12 @@ A curated selection of design and research work spanning **computational design*
 
 > **Viewing note:** The portfolio is hosted on Figma. The interactive viewer may take some time to load, especially on the first visit or with a slower connection. Thank you for your patience.
 
+## Leave a Trace · Guestbook
+
+### [Visit the interactive guestbook →](https://adele0302.github.io/shuofei-zan-design-portfolio/guestbook/)
+
+A small space for visitors to leave a thought, ask a research question, or say hello. Notes are submitted as public GitHub Issues. The page requires GitHub Pages to be enabled for this repository; see [publication instructions](guestbook/README.md).
+
 ## Selected research
 
 ### [Sky-Green Glaze Across Four Kilns of the Northern Song Ru-Kiln System →](research/ru-kiln-sky-green-porcelain/README.md)
