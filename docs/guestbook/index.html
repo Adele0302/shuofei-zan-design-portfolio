@@ -1,259 +1,275 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#fff9ec">
-<meta name="description" content="Leave a little note for Shuofei — a tiny pixel-cat guestbook.">
-<title>Pixel Cat Guestbook · Shuofei Zan</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#fff8ed">
+<meta name="description" content="一只可以摸摸的像素小猫。">
+<title>摸摸小猫 ♡</title>
 <style>
 :root{
   color-scheme:light;
-  --bg:#fff9ec;--ink:#35413d;--muted:#79837c;--line:#dfdfcf;
-  --peach:#ffc8b3;--pink:#ffdee0;--mint:#dcefe5;--lavender:#e8e1f5;
-  --yellow:#fff0bc;--paper:#fffef8;--pixel-shadow:#d0d6c9;
+  --background:#fff8ed;
+  --outline:#564a53;
+  --fur:#f7c48e;
+  --fur-dark:#e7a96e;
+  --fur-light:#ffe1b8;
+  --pink:#f39eaa;
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;background-color:var(--bg);background-image:radial-gradient(#e8dfc9 1px,transparent 1px);background-size:21px 21px;-webkit-font-smoothing:antialiased}
-button,textarea,input{font:inherit}a{color:inherit}button{cursor:pointer}
-:focus-visible{outline:3px dashed #ad6f65;outline-offset:4px}::selection{background:#f9caaf}
-.skip{position:absolute;left:15px;top:-100px;padding:12px;background:white;z-index:99}.skip:focus{top:12px}
-.wrap{width:min(1020px,calc(100% - 48px));margin:auto}
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:29px 0 19px;border-bottom:2px solid #c9d2c7}
-.logo{display:flex;align-items:center;gap:11px;text-decoration:none;font-family:ui-monospace,Consolas,monospace;font-size:14px;font-weight:900;letter-spacing:-.03em}
-.logo-icon{width:32px;height:32px;display:inline-grid;place-items:center;background:#ffcabb;border:2px solid var(--ink);box-shadow:3px 3px 0 #b5bdb0}
-.logo-icon svg{width:22px;height:22px;image-rendering:pixelated}
-.back{font-size:12px;font-weight:700;text-decoration:none;border-bottom:2px solid transparent;padding-bottom:3px}
-.back:hover{border-color:currentColor}
-.hero{text-align:center;padding:69px 0 14px}
-.mini-label{display:inline-flex;align-items:center;gap:9px;padding:9px 14px;background:#edf3e3;border:2px solid #99b2a4;font-family:ui-monospace,Consolas,monospace;font-size:11px;font-weight:800;letter-spacing:.08em}
-.status-dot{height:9px;width:9px;background:#74b294;border:1px solid #4d8270;box-shadow:2px 2px 0 #bddcca}
-h1{font-family:ui-monospace,"Lucida Console",Consolas,monospace;font-size:clamp(35px,5.45vw,68px);letter-spacing:-.075em;line-height:1.14;margin:27px auto 15px;font-weight:900}
-h1 .hi{color:#d88172}
-.sub{color:#77837b;line-height:1.8;max-width:550px;margin:0 auto;font-size:14px}
-.cats{position:relative;display:flex;align-items:flex-end;justify-content:center;gap:2px;height:188px;margin:14px auto 7px}
-.cat-mascot{display:grid;place-items:end center;width:min(27vw,170px);height:175px;transition:transform .18s}
-.cat-mascot:hover{transform:translateY(-8px) rotate(-2deg)}
-.cat-mascot:nth-child(2){width:min(29vw,194px);height:185px;transform:translateY(6px)}
-.cat-mascot:nth-child(2):hover{transform:translateY(-2px)}
-.pixel-cat{display:block;width:100%;max-width:180px;aspect-ratio:1;image-rendering:pixelated;shape-rendering:crispEdges;filter:drop-shadow(0 7px 0 #b2bbad61)}
-.float-heart{position:absolute;font:900 25px ui-monospace,monospace;color:#da9c97;pointer-events:none;user-select:none}
-.heart-one{left:calc(50% - 195px);top:26px}.heart-two{right:calc(50% - 194px);top:66px;color:#c4a7d0;font-size:20px}
-.postbox{position:relative;background:var(--paper);border:3px solid var(--ink);box-shadow:8px 8px 0 var(--pixel-shadow);max-width:725px;margin:18px auto 0;padding:34px 37px;text-align:left}
-.postbox:before{content:"";position:absolute;left:21px;right:21px;top:0;border-top:8px solid #f7d3bd}
-.box-heading{display:flex;gap:18px;justify-content:space-between;align-items:start;margin-bottom:23px}
-.box-heading h2{font:900 20px/1.4 ui-monospace,Consolas,monospace;letter-spacing:-.04em;margin:0}
-.box-heading .note-stamp{font-size:10px;font-weight:900;color:#9f8778;border:2px dashed #dcad9a;padding:7px;white-space:nowrap;transform:rotate(5deg)}
-.form-row{display:grid;grid-template-columns:1fr;gap:20px}
-.field label{display:block;font-size:12px;font-weight:800;margin-bottom:9px}.field label span{color:#939b94;font-size:11px;font-weight:500}
-.field input,.field textarea{width:100%;border:2px solid #ced6ca;background:#fcfdf8;color:var(--ink);border-radius:0;padding:13px 15px;font-size:14px;outline:0}
-.field input:focus,.field textarea:focus{border-color:#789c89;box-shadow:3px 3px 0 #d0e1d4}
-.field input::placeholder,.field textarea::placeholder{color:#a0aaa2}
-.field textarea{min-height:115px;line-height:1.8;resize:vertical}
-.count{font:700 11px ui-monospace,Consolas,monospace;text-align:right;color:#9da89e;margin-top:7px}
-.send-line{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-top:21px}
-.send-help{font-size:11px;line-height:1.7;color:#90998e;max-width:310px}
-.send-help strong{color:#637b6b}
-.send{display:inline-flex;gap:12px;align-items:center;justify-content:center;white-space:nowrap;background:#f8c7b2;color:#3c4640;border:3px solid #3c4640;padding:13px 21px;font:900 13px ui-monospace,Consolas,monospace;box-shadow:5px 5px 0 #c2cbbd;transition:transform .14s,box-shadow .14s}
-.send:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #c2cbbd}
-.send:active{transform:translate(3px,3px);box-shadow:2px 2px 0 #c2cbbd}
-.form-status{font-size:12px;line-height:1.7;min-height:19px;color:#537a66;margin-top:20px}
-.wall{max-width:900px;margin:87px auto 90px}
-.wall-head{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:23px}
-.wall-title{font:900 clamp(22px,4vw,34px) ui-monospace,Consolas,monospace;letter-spacing:-.05em;margin:0 0 5px}
-.wall-subtitle{margin:0;color:#7d8a80;font-size:12px;line-height:1.7}
-.refresh{border:2px solid #aab7ac;background:#f8faf2;color:#566d5e;font:800 11px ui-monospace,monospace;padding:11px 14px;box-shadow:3px 3px 0 #d0d9cc}
-.refresh:hover{background:#ecf4e9}.refresh:disabled{opacity:.65;cursor:wait}
-.messages{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}
-.letter{display:grid;grid-template-columns:94px minmax(0,1fr);gap:14px;background:var(--paper);border:2px solid #899e8e;box-shadow:5px 5px 0 #d2d6c6;padding:17px;min-height:163px}
-.letter.cat-0{background:#fff9f3}.letter.cat-1{background:#f7faf1}.letter.cat-2{background:#faf5fc}.letter.cat-3{background:#fffaf0}
-.letter-img{width:93px;align-self:start;background:#fff0d7;border:2px dashed #e5cfb1;padding:6px;display:grid;place-items:center}
-.letter-img svg{width:76px;height:76px}
-.letter-body{min-width:0;display:flex;flex-direction:column;gap:7px}
-.letter-name{font-weight:900;font-size:13px;overflow-wrap:anywhere}
-.letter-text{margin:0;font-size:12px;line-height:1.65;color:#637269;white-space:pre-wrap;overflow-wrap:anywhere;max-height:145px;overflow-y:auto}
-.letter-meta{font-size:10px;color:#949e95;display:flex;justify-content:space-between;align-items:end;flex-wrap:wrap;gap:7px;margin-top:auto}
-.letter-meta a{color:#537664;text-decoration:underline;text-underline-offset:3px}
-.empty{grid-column:1/-1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:39px 20px 42px;border:2px dashed #b5c5b5;background:#fffdf7;min-height:195px}
-.empty .pixel-cat{max-width:88px}
-.empty strong{font:900 16px ui-monospace,monospace;margin:12px 0}
-.empty p{color:#8f9b90;font-size:12px;line-height:1.7;margin:0}
-footer{border-top:2px solid #d8dfd4;text-align:center;color:#98a095;padding:27px 0 36px;font-size:11px;line-height:1.6}
-footer a{text-decoration:underline;text-underline-offset:3px}
-@media(max-width:740px){.wrap{width:calc(100% - 28px)}.topbar{padding:20px 0 14px}.logo{font-size:12px}
-.hero{padding-top:45px}h1{font-size:clamp(35px,8vw,53px)}.cats{height:146px;margin-top:10px}.cat-mascot{height:138px}.cat-mascot:nth-child(2){height:150px}
-.heart-one{left:10%;top:14px}.heart-two{right:11%;top:39px}
-.postbox{padding:27px 19px 22px;box-shadow:5px 5px 0 var(--pixel-shadow);margin:15px 3px 0}
-.box-heading h2{font-size:17px}.send-line{flex-direction:column;align-items:stretch;gap:16px}.send-help{max-width:none}.send{width:100%}
-.wall{margin:67px 2px 66px}.messages{grid-template-columns:1fr}.wall-title{font-size:25px}.refresh{font-size:10px;padding:9px}
+html,body{margin:0;width:100%;height:100%;min-height:100%;overflow:hidden}
+body{
+  background:var(--background);
+  background-image:radial-gradient(#eadfce 0.9px,transparent 0.9px);
+  background-size:26px 26px;
+  font-family:system-ui,sans-serif;
+  overscroll-behavior:none;
 }
-@media(max-width:380px){.logo span:last-child{max-width:170px;white-space:normal}.postbox{padding-inline:14px}.letter{grid-template-columns:70px 1fr;padding:12px;gap:9px}.letter-img{width:67px}.letter-img svg{width:50px;height:50px}}
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+main{
+  position:relative;
+  display:grid;
+  place-items:center;
+  min-height:100vh;
+  min-height:100svh;
+  isolation:isolate;
+}
+main::before{
+  content:"";
+  position:absolute;
+  width:min(74vmin,490px);
+  height:min(74vmin,490px);
+  background:radial-gradient(circle,#ffedd9 0%,#ffedd965 55%,transparent 74%);
+  border-radius:50%;
+  pointer-events:none;
+  z-index:-1;
+}
+#cat{
+  -webkit-tap-highlight-color:transparent;
+  appearance:none;
+  border:0;
+  background:transparent;
+  padding:0;
+  display:grid;
+  place-items:center;
+  position:relative;
+  width:min(76vmin,460px);
+  min-width:min(82vw,240px);
+  aspect-ratio:1;
+  touch-action:manipulation;
+  cursor:pointer;
+  outline-offset:12px;
+  user-select:none;
+}
+#cat svg{
+  display:block;
+  width:100%;
+  height:100%;
+  overflow:visible;
+  image-rendering:pixelated;
+  shape-rendering:crispEdges;
+  filter:drop-shadow(0 13px 0 #d0b9ad35);
+  transform-origin:50% 75%;
+  animation:breathing 3.2s ease-in-out infinite;
+  transition:transform .13s steps(2,end);
+}
+#cat:hover svg{transform:translateY(-3px)}
+#cat:active svg{transform:translateY(3px) scale(.98)}
+#cat.pet svg{animation:happyHop .56s steps(5,end) both}
+#cat .tail{transform-origin:45px 51px;animation:tailWag 2.2s steps(4,end) infinite}
+#cat.pet .tail{animation:tailWag .33s steps(3,end) 3}
+#cat .ears{transform-origin:32px 24px}
+#cat.pet .ears{animation:earWiggle .5s steps(3,end)}
+#cat .happy-eyes{opacity:0}
+#cat .open-eyes{opacity:1}
+#cat.pet .happy-eyes,#cat.blink .happy-eyes{opacity:1}
+#cat.pet .open-eyes,#cat.blink .open-eyes{opacity:0}
+#cat .blush{opacity:.3;transition:opacity .12s}
+#cat.pet .blush{opacity:1}
+#cat .mouth-smile{opacity:0}
+#cat.pet .mouth-smile{opacity:1}
+#cat.pet .mouth-idle{opacity:0}
+#cat .paw-left{transform-origin:23px 53px}
+#cat.pet .paw-left{animation:pawWave .48s steps(3,end)}
+#particles{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.heart{
+  position:absolute;
+  top:50%;
+  left:50%;
+  color:#ed96a2;
+  font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+  font-weight:900;
+  font-size:clamp(22px,5vmin,37px);
+  line-height:1;
+  text-shadow:2px 2px #fff9f0;
+  transform:translate(-50%,-50%);
+  animation:heartRise .95s steps(8,end) forwards;
+  will-change:transform,opacity;
+}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@keyframes breathing{
+  0%,100%{translate:0 0}50%{translate:0 -4px}
+}
+@keyframes happyHop{
+  0%,100%{transform:translateY(0)}
+  36%{transform:translateY(-13px) rotate(-2deg)}
+  64%{transform:translateY(-7px) rotate(2deg)}
+}
+@keyframes tailWag{
+  0%,100%{rotate:-6deg}
+  50%{rotate:13deg}
+}
+@keyframes earWiggle{
+  0%,100%{rotate:0deg}
+  40%{rotate:-4deg}
+  70%{rotate:4deg}
+}
+@keyframes pawWave{
+  0%,100%{rotate:0deg}
+  50%{rotate:-20deg}
+}
+@keyframes heartRise{
+  0%{opacity:0;transform:translate(-50%,-10px) scale(.65)}
+  18%{opacity:1}
+  100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% - 155px)) scale(1.24)}
+}
+@media (max-width:520px){
+  #cat{width:min(91vw,450px)}
+  main::before{width:92vmin;height:92vmin}
+}
+@media(prefers-reduced-motion:reduce){
+  #cat svg,#cat .tail,#cat.pet .tail,#cat.pet .ears,#cat.pet .paw-left,#cat.pet svg,.heart{animation:none!important;transition:none!important}
+  #cat svg{transform:none!important}
+}
 </style>
 </head>
 <body>
-<a href="#guestbook-form" class="skip">Skip to the guestbook</a>
-<div class="wrap">
-<header class="topbar">
-<a class="logo" href="../" aria-label="Back to Shuofei Zan portfolio">
-<span class="logo-icon" aria-hidden="true"><svg viewBox="0 0 22 22" shape-rendering="crispEdges"><path fill="#35413d" d="M6 4h3v3H6zm7 0h3v3h-3zM3 9h3v3H3zm13 0h3v3h-3zM6 12h10v7H6z"/><path fill="#fff0e6" d="M9 14h4v2H9z"/></svg></span>
-<span>SHUOFEI'S CAT POSTBOX</span>
-</a>
-<a class="back" href="../">← Portfolio</a>
-</header>
 <main>
-<section class="hero" aria-labelledby="main-title">
-<div class="mini-label"><span class="status-dot" aria-hidden="true"></span> PIXEL CAT GUESTBOOK · 留言板</div>
-<h1 id="main-title">Leave a little <span class="hi">meow</span> ♡</h1>
-<p class="sub">A tiny guestbook for kind notes, curious ideas and little hellos. The cats will keep your message safe. 🐾</p>
-<div class="cats" aria-hidden="true">
-<span class="float-heart heart-one">♥</span><span class="float-heart heart-two">✦</span>
-<div class="cat-mascot" id="cat-one"></div><div class="cat-mascot" id="cat-two"></div><div class="cat-mascot" id="cat-three"></div>
-</div>
-</section>
-<section class="postbox" aria-labelledby="form-title">
-<div class="box-heading"><h2 id="form-title">✉ WRITE A LITTLE LETTER</h2><span class="note-stamp" aria-hidden="true">CAT MAIL<br>★ ♥ ★</span></div>
-<form id="guestbook-form" method="get" action="https://github.com/Adele0302/shuofei-zan-design-portfolio/issues/new" target="_blank">
-<input type="hidden" name="title" id="issue-title">
-<input type="hidden" name="body" id="issue-body">
-<div class="form-row">
-<div class="field"><label for="visitor-name">Your name <span>(optional)</span></label><input id="visitor-name" maxlength="30" autocomplete="name" placeholder="How should the cats call you?"></div>
-<div class="field"><label for="message">Your message</label><textarea id="message" maxlength="280" minlength="1" placeholder="Write a hello, a question, or a little note..." required></textarea><div class="count" id="char-count">0 / 280</div></div>
-</div>
-<div class="send-line">
-<p class="send-help">Posting opens a <strong>public GitHub Issue</strong> in a new tab. A GitHub account is required; your message is published only after you confirm there.</p>
-<button class="send" type="submit">SEND LETTER <span aria-hidden="true">↗</span></button>
-</div>
-<div id="form-status" class="form-status" role="status" aria-live="polite"></div>
-</form>
-</section>
-<section class="wall" aria-labelledby="wall-title">
-<div class="wall-head"><div><h2 class="wall-title" id="wall-title">♡ Little letters <span id="total-count" aria-label="number of letters"></span></h2><p class="wall-subtitle">Real visitor messages, guarded by very serious pixel cats.</p></div><button type="button" class="refresh" id="refresh">↻ REFRESH</button></div>
-<div class="messages" id="messages" aria-live="polite"><div class="empty"><strong>Checking the mailbox…</strong><p>Collecting new letters from GitHub.</p></div></div>
-</section>
+  <button id="cat" type="button" aria-label="摸摸小猫" title="摸摸小猫">
+    <svg viewBox="0 0 64 64" role="img" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+      <!-- The cat is drawn in discrete pixel-sized shapes; no external images are loaded. -->
+      <ellipse cx="33" cy="58" rx="19" ry="2" fill="#d7bc9f" opacity=".55"/>
+      <!-- Tail behind the body -->
+      <g class="tail" fill="none" stroke-linecap="square" stroke-linejoin="miter">
+        <path d="M42 49H51V45H55V38H53V34" stroke="#564a53" stroke-width="9"/>
+        <path d="M42 49H51V45H55V38H53V34" stroke="#e7a96e" stroke-width="5"/>
+        <path d="M53 33v3" stroke="#ffe1b8" stroke-width="3"/>
+      </g>
+      <!-- Body and belly -->
+      <path d="M21 40H44V43H47V51H45V57H19V53H17V46H19V42H21Z" fill="#564a53"/>
+      <path d="M22 42H43V45H45V53H43V56H21V53H19V46H22Z" fill="#f7c48e"/>
+      <path d="M26 43H39V46H41V55H24V47H26Z" fill="#ffe7c6"/>
+      <path d="M23 46h3v4h-3zM40 46h3v4h-3z" fill="#e7a96e"/>
+      <!-- Ears and head -->
+      <g class="ears">
+        <path d="M11 24V8H15V6H19V9H21V12H24V21Z" fill="#564a53"/>
+        <path d="M13 22V9H16V8H18V11H20V15H22V21Z" fill="#f7c48e"/>
+        <path d="M15 18v-7h2v2h2v5Z" fill="#f2a8ad"/>
+        <path d="M40 21V12H43V9H45V6H49V8H53V24Z" fill="#564a53"/>
+        <path d="M42 21V15H44V11H46V8H48V9H51V22Z" fill="#f7c48e"/>
+        <path d="M45 18v-5h2v-2h2v7Z" fill="#f2a8ad"/>
+      </g>
+      <path d="M17 15H47V18H51V22H53V36H51V40H47V43H17V40H13V37H11V22H13V18H17Z" fill="#564a53"/>
+      <path d="M18 17H46V20H50V23H51V35H49V39H46V41H18V39H15V36H13V23H15V20H18Z" fill="#f7c48e"/>
+      <!-- Stripes and soft cream muzzle -->
+      <path d="M27 17H37V20H34V23H30V20H27Z" fill="#e9a76a"/>
+      <path d="M17 23h5v3h-5zM43 23h5v3h-5z" fill="#e9a76a"/>
+      <path d="M23 32H41V36H44V39H20V36H23Z" fill="#ffe7c6"/>
+      <path d="M26 34h12v4H26Z" fill="#fff0d7"/>
+      <!-- Open sparkling eyes -->
+      <g class="open-eyes">
+        <rect x="21" y="27" width="6" height="7" fill="#564a53"/>
+        <rect x="22" y="27" width="2" height="2" fill="#fffaf3"/>
+        <rect x="38" y="27" width="6" height="7" fill="#564a53"/>
+        <rect x="39" y="27" width="2" height="2" fill="#fffaf3"/>
+      </g>
+      <!-- Closed, happy eyes during petting and blinking -->
+      <g class="happy-eyes" fill="#564a53">
+        <rect x="20" y="30" width="2" height="2"/>
+        <rect x="22" y="28" width="4" height="2"/>
+        <rect x="26" y="30" width="2" height="2"/>
+        <rect x="37" y="30" width="2" height="2"/>
+        <rect x="39" y="28" width="4" height="2"/>
+        <rect x="43" y="30" width="2" height="2"/>
+      </g>
+      <g class="blush" fill="#ed909f">
+        <rect x="15" y="34" width="6" height="3"/>
+        <rect x="44" y="34" width="6" height="3"/>
+      </g>
+      <path d="M30 34h5v2h-2v2h-1v-2h-2Z" fill="#ce7f88"/>
+      <g class="mouth-idle" fill="#73515a"><rect x="29" y="38" width="3" height="1"/><rect x="34" y="38" width="3" height="1"/></g>
+      <g class="mouth-smile" fill="#73515a"><rect x="28" y="38" width="2" height="2"/><rect x="30" y="40" width="6" height="2"/><rect x="36" y="38" width="2" height="2"/></g>
+      <!-- Whiskers -->
+      <path d="M12 34h5v1h-5zM13 38h5v1h-5zM48 34h5v1h-5zM47 38h5v1h-5z" fill="#ab7e71"/>
+      <!-- Front paws -->
+      <g class="paw-left">
+        <path d="M19 50H29V57H18V54H19Z" fill="#564a53"/>
+        <path d="M21 51H27V55H20V54H21Z" fill="#ffe1b8"/>
+        <path d="M22 54h1v2h-1zm3 0h1v2h-1z" fill="#dbab85"/>
+      </g>
+      <path d="M36 50H46V54H47V57H36Z" fill="#564a53"/>
+      <path d="M38 51H44V55H38Z" fill="#ffe1b8"/>
+      <path d="M40 54h1v2h-1zm3 0h1v2h-1z" fill="#dbab85"/>
+    </svg>
+  </button>
+  <div id="particles" aria-hidden="true"></div>
+  <span class="sr-only" id="announcement" role="status" aria-live="polite"></span>
 </main>
-<footer>Made with ♡ by Shuofei Zan · <a href="https://github.com/Adele0302/shuofei-zan-design-portfolio" target="_blank" rel="noopener noreferrer">Source on GitHub ↗</a></footer>
-</div>
 <script>
 (function(){
-'use strict';
-const repository='Adele0302/shuofei-zan-design-portfolio';
-const api='https://api.github.com/repos/'+repository+'/issues?state=open&sort=created&direction=desc&per_page=100';
-const colors=[
- {fur:'#e8a66f',inner:'#f5d0bd',belly:'#fbedcc',mark:'#c78656',eyes:'#3b4641',tail:'#d28a59'},
- {fur:'#4b5456',inner:'#ecbcb9',belly:'#fff3da',mark:'#30383a',eyes:'#374243',tail:'#394345'},
- {fur:'#b4b3cd',inner:'#efd3e3',belly:'#f1e9f7',mark:'#8c91b1',eyes:'#3e4550',tail:'#858aab'},
- {fur:'#e3d8b2',inner:'#edb7b0',belly:'#fcf4d8',mark:'#ccb88a',eyes:'#3c4540',tail:'#d5c594'}
-];
-const ns='http://www.w3.org/2000/svg';
-const byId=id=>document.getElementById(id);
-function pixelCat(index){
- const c=colors[((Number(index)||0)%colors.length+colors.length)%colors.length];
- const pixels=[];
- const rect=(x,y,w,h,color)=>pixels.push('<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="'+color+'"/>');
- const ink='#39443d';
- // Tail, ears and body are built from integer-sized pixel blocks, not vector curves or raster imagery.
- rect(25,17,3,9,ink);rect(27,14,3,7,ink);rect(26,15,2,6,c.tail);rect(25,21,2,4,c.fur);
- rect(8,19,18,11,ink);rect(9,20,16,9,c.fur);
- rect(11,21,12,8,c.belly);
- rect(6,4,6,11,ink);rect(7,5,4,9,c.fur);rect(8,7,2,5,c.inner);
- rect(20,4,6,11,ink);rect(21,5,4,9,c.fur);rect(22,7,2,5,c.inner);
- rect(5,10,22,13,ink);rect(6,11,20,11,c.fur);
- rect(13,10,6,3,c.mark);rect(11,12,2,2,c.mark);rect(19,12,2,2,c.mark);
- if(index%4===1){rect(12,19,8,4,c.belly);rect(11,15,3,4,c.belly);rect(18,15,3,4,c.belly);}
- if(index%4===2){rect(6,12,5,5,c.mark);rect(22,11,4,5,c.belly);}
- if(index%4===3){rect(9,14,4,3,c.belly);rect(20,13,4,3,c.belly);}
- rect(10,16,3,3,c.eyes);rect(20,16,3,3,c.eyes);
- rect(11,16,1,1,'#fffef1');rect(21,16,1,1,'#fffef1');
- rect(14,18,4,2,c.inner);rect(16,20,1,1,ink);rect(14,21,2,1,ink);rect(17,21,2,1,ink);
- rect(7,19,3,1,c.mark);rect(23,19,3,1,c.mark);
- rect(9,27,6,4,ink);rect(10,28,4,2,c.fur);rect(19,27,6,4,ink);rect(20,28,4,2,c.fur);
- return '<svg class="pixel-cat" viewBox="0 0 32 32" xmlns="'+ns+'" shape-rendering="crispEdges" aria-hidden="true">'+pixels.join('')+'</svg>';
-}
-byId('cat-one').innerHTML=pixelCat(2);
-byId('cat-two').innerHTML=pixelCat(0);
-byId('cat-three').innerHTML=pixelCat(1);
-byId('message').addEventListener('input',()=>{
- byId('char-count').textContent=String(byId('message').value.length)+' / 280';
-});
-byId('guestbook-form').addEventListener('submit',function(event){
- const content=byId('message').value.trim().slice(0,280);
- if(!content){event.preventDefault();byId('message').focus();return;}
- const name=byId('visitor-name').value.trim().replace(/[\r\n]+/g,' ').slice(0,30)||'A visitor';
- const title='[Pixel Catbook] '+name;
- const body='<!-- zan-pixel-catbook:v3 -->\nName: '+name+'\nMessage:\n'+content+'\n<!-- end-zan-pixel-catbook -->\n\n---\nPosted using Shuofei Zan’s public Pixel Cat Guestbook. The author confirms publication on GitHub.';
- byId('issue-title').value=title;
- byId('issue-body').value=body;
- byId('form-status').textContent='Almost there! Complete the new Issue on GitHub, then return and refresh the letters.';
- // Native GET form submission opens GitHub; no message is saved until the visitor posts the Issue.
-});
-function parseIssue(issue){
- if(!issue||issue.pull_request||typeof issue.title!=='string'||typeof issue.body!=='string')return null;
- const body=issue.body.replace(/\r/g,'');
- let name,message;
- if(issue.title.startsWith('[Pixel Catbook] ')){
-  const m=body.match(/<!-- zan-pixel-catbook:v3 -->\s*\nName: ([^\n]+)\nMessage:\n([\s\S]*?)\n<!-- end-zan-pixel-catbook -->/);
-  if(!m)return null;name=m[1];message=m[2];
- }else if(issue.title.startsWith('[Catbook] ')){
-  const m=body.match(/<!-- zan-catbook:v2 -->\s*\nFrom: ([^\n]+)\nCat: ([^\n]+)\nCoat: ([^\n]+)\nMood: ([^\n]+)\nMessage:\n([\s\S]*?)\n<!-- end-zan-catbook -->/);
-  if(!m)return null;name=m[1];message=m[5];
- }else if(issue.title.startsWith('[Guestbook] ')){
-  const m=body.match(/<!-- zan-guestbook:v1 -->\s*\nName: ([^\n]+)\nGlaze: ([^\n]+)\nMessage:\n([\s\S]*?)\n<!-- end-zan-guestbook -->/);
-  if(!m)return null;name=m[1];message=m[3];
- }else return null;
- name=name.trim().slice(0,30);message=message.trim().slice(0,280);
- if(!name||!message)return null;
- const url=typeof issue.html_url==='string'&&issue.html_url.startsWith('https://github.com/'+repository+'/issues/')?issue.html_url:'https://github.com/'+repository+'/issues';
- const id=Number.isInteger(issue.number)?issue.number:0;
- return {name,message,url,id,created:issue.created_at||''};
-}
-function node(tag,className,text){
- const item=document.createElement(tag);
- if(className)item.className=className;
- if(text!==undefined)item.textContent=text;
- return item;
-}
-function emptyMailbox(title,description){
- const area=byId('messages');area.replaceChildren();
- const div=node('div','empty');const cat=node('div');cat.innerHTML=pixelCat(2);
- div.append(cat,node('strong','',title),node('p','',description));area.append(div);
-}
-function render(letters){
- const area=byId('messages');area.replaceChildren();
- byId('total-count').textContent=letters.length?'('+letters.length+')':'';
- if(!letters.length){emptyMailbox('No letters yet ♡','Be the first person to leave a little hello.');return;}
- letters.slice(0,24).forEach(letter=>{
-  const styleIndex=letter.id%colors.length;
-  const card=node('article','letter cat-'+styleIndex);
-  const avatar=node('div','letter-img');avatar.innerHTML=pixelCat(styleIndex);
-  const content=node('div','letter-body');
-  const author=node('div','letter-name',letter.name);
-  const msg=node('p','letter-text',letter.message);
-  const bottom=node('div','letter-meta');
-  const stamp=letter.created?new Date(letter.created):null;
-  const date=stamp&&!Number.isNaN(stamp.getTime())?stamp.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'';
-  const when=node('span','',date);
-  const source=node('a','','VIEW ↗');source.href=letter.url;source.target='_blank';source.rel='noopener noreferrer';
-  bottom.append(when,source);content.append(author,msg,bottom);card.append(avatar,content);area.append(card);
- });
-}
-async function load(){
- const refresh=byId('refresh');refresh.disabled=true;
- emptyMailbox('Checking the mailbox…','The pixel cats are finding your letters.');
- try{
-  const response=await fetch(api,{headers:{Accept:'application/vnd.github+json'}});
-  if(!response.ok)throw new Error('GitHub '+response.status);
-  const result=await response.json();if(!Array.isArray(result))throw new Error('Invalid response');
-  const notes=result.map(parseIssue).filter(Boolean);
-  render(notes);
- }catch(error){
-  byId('total-count').textContent='';
-  emptyMailbox('Mailbox is resting','GitHub letters could not be loaded right now. Click Refresh to try again.');
- }finally{refresh.disabled=false;}
-}
-byId('refresh').addEventListener('click',load);
-load();
+  'use strict';
+  const cat=document.getElementById('cat');
+  const particles=document.getElementById('particles');
+  const announcement=document.getElementById('announcement');
+  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
+  let pats=0,petTimer=0,blinkTimer=0,dragTime=0,held=false;
+  function pet(){
+    pats++;
+    clearTimeout(petTimer);
+    cat.classList.remove('blink','pet');
+    // Restart a discrete pixel-hop on each click or touch.
+    void cat.offsetWidth;
+    cat.classList.add('pet');
+    petTimer=window.setTimeout(()=>cat.classList.remove('pet'),670);
+    announcement.textContent=pats===1?'小猫发出呼噜声。':'小猫很开心。';
+    if(reduced.matches)return;
+    const origin=cat.getBoundingClientRect();
+    const centerX=origin.left+origin.width/2;
+    const centerY=origin.top+origin.height*.33;
+    const count=3;
+    for(let i=0;i<count;i++){
+      const heart=document.createElement('span');
+      heart.className='heart';
+      heart.textContent=i===1?'✦':'♥';
+      heart.style.left=(centerX+(i-1)*origin.width*.19)+'px';
+      heart.style.top=(centerY+(i%2)*14)+'px';
+      heart.style.setProperty('--dx',((i-1)*36)+'px');
+      particles.appendChild(heart);
+      heart.addEventListener('animationend',()=>heart.remove(),{once:true});
+      window.setTimeout(()=>heart.remove(),1250);
+    }
+  }
+  cat.addEventListener('pointerdown',event=>{
+    if(event.pointerType==='mouse'&&event.button!==0)return;
+    held=true;dragTime=Date.now();pet();
+  });
+  cat.addEventListener('pointermove',event=>{
+    if(!held||event.buttons===0&&event.pointerType==='mouse')return;
+    if(Date.now()-dragTime>330){dragTime=Date.now();pet();}
+  });
+  for(const type of ['pointerup','pointercancel','pointerleave']){
+    cat.addEventListener(type,()=>{held=false;});
+  }
+  // Native button keyboard activation fires a click with detail=0.
+  cat.addEventListener('click',event=>{if(event.detail===0)pet();});
+  function blink(){
+    if(!cat.classList.contains('pet')){
+      cat.classList.add('blink');
+      window.setTimeout(()=>cat.classList.remove('blink'),165);
+    }
+    blinkTimer=window.setTimeout(blink,2700+Math.random()*2400);
+  }
+  blinkTimer=window.setTimeout(blink,2100);
+  window.addEventListener('pagehide',()=>{clearTimeout(blinkTimer);clearTimeout(petTimer);});
 })();
 </script>
 </body>
