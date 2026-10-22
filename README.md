@@ -8,14 +8,6 @@ A curated selection of design and research work spanning **computational design*
 
 > **Viewing note:** The portfolio is hosted on Figma. The interactive viewer may take some time to load, especially on the first visit or with a slower connection. Thank you for your patience.
 
-## Pet the Pixel Cat
-
-A single full-screen interactive pixel cat. Tap or click to pet; it wiggles, blinks, and sends a little heart. No guestbook forms or other page content.
-
-- [Pet the pixel cat ↗](https://adele0302.github.io/shuofei-zan-design-portfolio/)
-- [Source code](docs/index.html)
-- [Interaction notes](docs/guestbook/README.md)
-
 ## Selected research
 
 ### [Sky-Green Glaze Across Four Kilns of the Northern Song Ru-Kiln System →](research/ru-kiln-sky-green-porcelain/README.md)
