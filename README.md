@@ -8,13 +8,13 @@ A curated selection of design and research work spanning **computational design*
 
 > **Viewing note:** The portfolio is hosted on Figma. The interactive viewer may take some time to load, especially on the first visit or with a slower connection. Thank you for your patience.
 
-## The Cat Mail Club — interactive guestbook
+## Pet the Pixel Cat
 
-A cozy interactive cat guestbook: pick a cat, leave a message, and see it join the letter wall.
+A single full-screen interactive pixel cat. Tap or click to pet; it wiggles, blinks, and sends a little heart. No guestbook forms or other page content.
 
-- [Cat guestbook source code](docs/guestbook/index.html)
-- [Cat guestbook deployment guide](docs/guestbook/README.md)
-- [Open the guestbook on GitHub Pages](https://adele0302.github.io/shuofei-zan-design-portfolio/guestbook/) *(available after enabling Pages from `main /docs`)*
+- [Pet the pixel cat ↗](https://adele0302.github.io/shuofei-zan-design-portfolio/)
+- [Source code](docs/index.html)
+- [Interaction notes](docs/guestbook/README.md)
 
 ## Selected research
 
