@@ -1,25 +1,276 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#edf2ec">
-<meta name="description" content="Shuofei Zan — design research, computational design and human-centered systems.">
-<title>Shuofei Zan — Design & Research</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#fff8ed">
+<meta name="description" content="一只可以摸摸的像素小猫。">
+<title>摸摸小猫 ♡</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;1,500&display=swap');
-:root{--ink:#2a4a46;--bg:#edf2ec;--line:#cadbd0}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:'DM Sans',sans-serif;color:var(--ink);background:var(--bg)}a{color:inherit;text-decoration:none}a:focus-visible{outline:3px solid #79ab98;outline-offset:3px}.wrap{width:min(1120px,calc(100% - 52px));margin:auto}nav{display:flex;align-items:center;justify-content:space-between;padding:31px 0;border-bottom:1px solid var(--line);font-size:12px;text-transform:uppercase;letter-spacing:.12em;font-weight:700}nav span{color:#9aafa6;font-weight:400}
-.hero{min-height:510px;display:flex;flex-direction:column;justify-content:center;border-bottom:1px solid var(--line);padding:90px 0}.eyebrow{font-size:11px;color:#548171;text-transform:uppercase;letter-spacing:.23em;font-weight:700}.hero h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(66px,10vw,125px);line-height:1.02;letter-spacing:-.055em;font-weight:500;max-width:850px;margin:25px 0}.hero h1 em{color:#739b8c;font-weight:500}.hero p{color:#6b8078;line-height:1.9;max-width:490px;font-size:15px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;padding:55px 0 105px}.card{position:relative;min-height:280px;padding:29px;border-radius:6px;background:#dce9df;transition:transform .25s,box-shadow .25s}.card:hover{transform:translateY(-5px);box-shadow:0 18px 29px #2a4a4620}.card:nth-child(2){background:#dae8e8}.card:nth-child(3){background:#eae4d6}.card small{font-size:10px;letter-spacing:.18em;color:#5e8073;font-weight:700}.card h2{font-size:35px;font-family:'Playfair Display',Georgia,serif;letter-spacing:-.04em;font-weight:500;margin:34px 0 13px}.card p{font-size:13px;line-height:1.7;color:#688077;max-width:250px}.arrow{position:absolute;right:29px;bottom:25px;font-size:24px}footer{padding:27px 0 48px;border-top:1px solid var(--line);color:#799186;font-size:11px;display:flex;justify-content:space-between;gap:15px}footer a{text-decoration:underline}
-@media(max-width:790px){.cards{grid-template-columns:1fr;padding:35px 0 55px}.card{min-height:215px}.hero{min-height:450px;padding:60px 0}footer{flex-direction:column}}
-@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+:root{
+  color-scheme:light;
+  --background:#fff8ed;
+  --outline:#564a53;
+  --fur:#f7c48e;
+  --fur-dark:#e7a96e;
+  --fur-light:#ffe1b8;
+  --pink:#f39eaa;
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;min-height:100%;overflow:hidden}
+body{
+  background:var(--background);
+  background-image:radial-gradient(#eadfce 0.9px,transparent 0.9px);
+  background-size:26px 26px;
+  font-family:system-ui,sans-serif;
+  overscroll-behavior:none;
+}
+main{
+  position:relative;
+  display:grid;
+  place-items:center;
+  min-height:100vh;
+  min-height:100svh;
+  isolation:isolate;
+}
+main::before{
+  content:"";
+  position:absolute;
+  width:min(74vmin,490px);
+  height:min(74vmin,490px);
+  background:radial-gradient(circle,#ffedd9 0%,#ffedd965 55%,transparent 74%);
+  border-radius:50%;
+  pointer-events:none;
+  z-index:-1;
+}
+#cat{
+  -webkit-tap-highlight-color:transparent;
+  appearance:none;
+  border:0;
+  background:transparent;
+  padding:0;
+  display:grid;
+  place-items:center;
+  position:relative;
+  width:min(76vmin,460px);
+  min-width:min(82vw,240px);
+  aspect-ratio:1;
+  touch-action:manipulation;
+  cursor:pointer;
+  outline-offset:12px;
+  user-select:none;
+}
+#cat svg{
+  display:block;
+  width:100%;
+  height:100%;
+  overflow:visible;
+  image-rendering:pixelated;
+  shape-rendering:crispEdges;
+  filter:drop-shadow(0 13px 0 #d0b9ad35);
+  transform-origin:50% 75%;
+  animation:breathing 3.2s ease-in-out infinite;
+  transition:transform .13s steps(2,end);
+}
+#cat:hover svg{transform:translateY(-3px)}
+#cat:active svg{transform:translateY(3px) scale(.98)}
+#cat.pet svg{animation:happyHop .56s steps(5,end) both}
+#cat .tail{transform-origin:45px 51px;animation:tailWag 2.2s steps(4,end) infinite}
+#cat.pet .tail{animation:tailWag .33s steps(3,end) 3}
+#cat .ears{transform-origin:32px 24px}
+#cat.pet .ears{animation:earWiggle .5s steps(3,end)}
+#cat .happy-eyes{opacity:0}
+#cat .open-eyes{opacity:1}
+#cat.pet .happy-eyes,#cat.blink .happy-eyes{opacity:1}
+#cat.pet .open-eyes,#cat.blink .open-eyes{opacity:0}
+#cat .blush{opacity:.3;transition:opacity .12s}
+#cat.pet .blush{opacity:1}
+#cat .mouth-smile{opacity:0}
+#cat.pet .mouth-smile{opacity:1}
+#cat.pet .mouth-idle{opacity:0}
+#cat .paw-left{transform-origin:23px 53px}
+#cat.pet .paw-left{animation:pawWave .48s steps(3,end)}
+#particles{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.heart{
+  position:absolute;
+  top:50%;
+  left:50%;
+  color:#ed96a2;
+  font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+  font-weight:900;
+  font-size:clamp(22px,5vmin,37px);
+  line-height:1;
+  text-shadow:2px 2px #fff9f0;
+  transform:translate(-50%,-50%);
+  animation:heartRise .95s steps(8,end) forwards;
+  will-change:transform,opacity;
+}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@keyframes breathing{
+  0%,100%{translate:0 0}50%{translate:0 -4px}
+}
+@keyframes happyHop{
+  0%,100%{transform:translateY(0)}
+  36%{transform:translateY(-13px) rotate(-2deg)}
+  64%{transform:translateY(-7px) rotate(2deg)}
+}
+@keyframes tailWag{
+  0%,100%{rotate:-6deg}
+  50%{rotate:13deg}
+}
+@keyframes earWiggle{
+  0%,100%{rotate:0deg}
+  40%{rotate:-4deg}
+  70%{rotate:4deg}
+}
+@keyframes pawWave{
+  0%,100%{rotate:0deg}
+  50%{rotate:-20deg}
+}
+@keyframes heartRise{
+  0%{opacity:0;transform:translate(-50%,-10px) scale(.65)}
+  18%{opacity:1}
+  100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% - 155px)) scale(1.24)}
+}
+@media (max-width:520px){
+  #cat{width:min(91vw,450px)}
+  main::before{width:92vmin;height:92vmin}
+}
+@media(prefers-reduced-motion:reduce){
+  #cat svg,#cat .tail,#cat.pet .tail,#cat.pet .ears,#cat.pet .paw-left,#cat.pet svg,.heart{animation:none!important;transition:none!important}
+  #cat svg{transform:none!important}
+}
 </style>
 </head>
-<body><div class="wrap">
-<nav><a href="./">SHUOFEI ZAN <span> / RESEARCH STUDIO</span></a><a href="guestbook/">Cat Mail Club ↗</a></nav>
-<main><section class="hero"><div class="eyebrow">Design · Computational thinking · Human–AI interaction</div><h1>Research meets<br><em>the making.</em></h1><p>A selection of projects, research explorations, and the conversations that shape them. Thank you for visiting.</p></section>
-<section class="cards" aria-label="Explore projects">
-<a class="card" href="https://www.figma.com/proto/Bi4Qcumy8768mXM7jljO9i/HoberGlow_Portfolio_Design_Engineering--Copy-?page-id=0%3A1&amp;node-id=2003-2359&amp;viewport=-134%2C677%2C0.16&amp;t=hmoNgT8rTcDYEZRr-1&amp;scaling=scale-down&amp;content-scaling=fixed&amp;starting-point-node-id=2003%3A152" target="_blank" rel="noopener noreferrer"><small>01 / SELECTED PROJECTS</small><h2>Design portfolio</h2><p>My interactive project portfolio and computational design work.</p><span class="arrow">↗</span></a>
-<a class="card" href="https://github.com/Adele0302/shuofei-zan-design-portfolio/tree/main/research" target="_blank" rel="noopener noreferrer"><small>02 / RESEARCH</small><h2>Research archive</h2><p>A curated selection of scientific and material-focused research.</p><span class="arrow">↗</span></a>
-<a class="card" href="guestbook/"><small>03 / CONNECTIONS</small><h2>Pixel Cat Guestbook</h2><p>A cozy one-page pixel-cat message board. Leave a little hello.</p><span class="arrow">↗</span></a>
-</section></main>
-<footer><span>© <span id="year">2026</span> Shuofei Zan</span><span><a href="https://github.com/Adele0302/shuofei-zan-design-portfolio">GitHub repository ↗</a></span></footer>
-</div><script>document.getElementById('year').textContent=String(new Date().getFullYear());</script></body></html>
+<body>
+<main>
+  <button id="cat" type="button" aria-label="摸摸小猫" title="摸摸小猫">
+    <svg viewBox="0 0 64 64" role="img" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+      <!-- The cat is drawn in discrete pixel-sized shapes; no external images are loaded. -->
+      <ellipse cx="33" cy="58" rx="19" ry="2" fill="#d7bc9f" opacity=".55"/>
+      <!-- Tail behind the body -->
+      <g class="tail" fill="none" stroke-linecap="square" stroke-linejoin="miter">
+        <path d="M42 49H51V45H55V38H53V34" stroke="#564a53" stroke-width="9"/>
+        <path d="M42 49H51V45H55V38H53V34" stroke="#e7a96e" stroke-width="5"/>
+        <path d="M53 33v3" stroke="#ffe1b8" stroke-width="3"/>
+      </g>
+      <!-- Body and belly -->
+      <path d="M21 40H44V43H47V51H45V57H19V53H17V46H19V42H21Z" fill="#564a53"/>
+      <path d="M22 42H43V45H45V53H43V56H21V53H19V46H22Z" fill="#f7c48e"/>
+      <path d="M26 43H39V46H41V55H24V47H26Z" fill="#ffe7c6"/>
+      <path d="M23 46h3v4h-3zM40 46h3v4h-3z" fill="#e7a96e"/>
+      <!-- Ears and head -->
+      <g class="ears">
+        <path d="M11 24V8H15V6H19V9H21V12H24V21Z" fill="#564a53"/>
+        <path d="M13 22V9H16V8H18V11H20V15H22V21Z" fill="#f7c48e"/>
+        <path d="M15 18v-7h2v2h2v5Z" fill="#f2a8ad"/>
+        <path d="M40 21V12H43V9H45V6H49V8H53V24Z" fill="#564a53"/>
+        <path d="M42 21V15H44V11H46V8H48V9H51V22Z" fill="#f7c48e"/>
+        <path d="M45 18v-5h2v-2h2v7Z" fill="#f2a8ad"/>
+      </g>
+      <path d="M17 15H47V18H51V22H53V36H51V40H47V43H17V40H13V37H11V22H13V18H17Z" fill="#564a53"/>
+      <path d="M18 17H46V20H50V23H51V35H49V39H46V41H18V39H15V36H13V23H15V20H18Z" fill="#f7c48e"/>
+      <!-- Stripes and soft cream muzzle -->
+      <path d="M27 17H37V20H34V23H30V20H27Z" fill="#e9a76a"/>
+      <path d="M17 23h5v3h-5zM43 23h5v3h-5z" fill="#e9a76a"/>
+      <path d="M23 32H41V36H44V39H20V36H23Z" fill="#ffe7c6"/>
+      <path d="M26 34h12v4H26Z" fill="#fff0d7"/>
+      <!-- Open sparkling eyes -->
+      <g class="open-eyes">
+        <rect x="21" y="27" width="6" height="7" fill="#564a53"/>
+        <rect x="22" y="27" width="2" height="2" fill="#fffaf3"/>
+        <rect x="38" y="27" width="6" height="7" fill="#564a53"/>
+        <rect x="39" y="27" width="2" height="2" fill="#fffaf3"/>
+      </g>
+      <!-- Closed, happy eyes during petting and blinking -->
+      <g class="happy-eyes" fill="#564a53">
+        <rect x="20" y="30" width="2" height="2"/>
+        <rect x="22" y="28" width="4" height="2"/>
+        <rect x="26" y="30" width="2" height="2"/>
+        <rect x="37" y="30" width="2" height="2"/>
+        <rect x="39" y="28" width="4" height="2"/>
+        <rect x="43" y="30" width="2" height="2"/>
+      </g>
+      <g class="blush" fill="#ed909f">
+        <rect x="15" y="34" width="6" height="3"/>
+        <rect x="44" y="34" width="6" height="3"/>
+      </g>
+      <path d="M30 34h5v2h-2v2h-1v-2h-2Z" fill="#ce7f88"/>
+      <g class="mouth-idle" fill="#73515a"><rect x="29" y="38" width="3" height="1"/><rect x="34" y="38" width="3" height="1"/></g>
+      <g class="mouth-smile" fill="#73515a"><rect x="28" y="38" width="2" height="2"/><rect x="30" y="40" width="6" height="2"/><rect x="36" y="38" width="2" height="2"/></g>
+      <!-- Whiskers -->
+      <path d="M12 34h5v1h-5zM13 38h5v1h-5zM48 34h5v1h-5zM47 38h5v1h-5z" fill="#ab7e71"/>
+      <!-- Front paws -->
+      <g class="paw-left">
+        <path d="M19 50H29V57H18V54H19Z" fill="#564a53"/>
+        <path d="M21 51H27V55H20V54H21Z" fill="#ffe1b8"/>
+        <path d="M22 54h1v2h-1zm3 0h1v2h-1z" fill="#dbab85"/>
+      </g>
+      <path d="M36 50H46V54H47V57H36Z" fill="#564a53"/>
+      <path d="M38 51H44V55H38Z" fill="#ffe1b8"/>
+      <path d="M40 54h1v2h-1zm3 0h1v2h-1z" fill="#dbab85"/>
+    </svg>
+  </button>
+  <div id="particles" aria-hidden="true"></div>
+  <span class="sr-only" id="announcement" role="status" aria-live="polite"></span>
+</main>
+<script>
+(function(){
+  'use strict';
+  const cat=document.getElementById('cat');
+  const particles=document.getElementById('particles');
+  const announcement=document.getElementById('announcement');
+  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
+  let pats=0,petTimer=0,blinkTimer=0,dragTime=0,held=false;
+  function pet(){
+    pats++;
+    clearTimeout(petTimer);
+    cat.classList.remove('blink','pet');
+    // Restart a discrete pixel-hop on each click or touch.
+    void cat.offsetWidth;
+    cat.classList.add('pet');
+    petTimer=window.setTimeout(()=>cat.classList.remove('pet'),670);
+    announcement.textContent=pats===1?'小猫发出呼噜声。':'小猫很开心。';
+    if(reduced.matches)return;
+    const origin=cat.getBoundingClientRect();
+    const centerX=origin.left+origin.width/2;
+    const centerY=origin.top+origin.height*.33;
+    const count=3;
+    for(let i=0;i<count;i++){
+      const heart=document.createElement('span');
+      heart.className='heart';
+      heart.textContent=i===1?'✦':'♥';
+      heart.style.left=(centerX+(i-1)*origin.width*.19)+'px';
+      heart.style.top=(centerY+(i%2)*14)+'px';
+      heart.style.setProperty('--dx',((i-1)*36)+'px');
+      particles.appendChild(heart);
+      heart.addEventListener('animationend',()=>heart.remove(),{once:true});
+      window.setTimeout(()=>heart.remove(),1250);
+    }
+  }
+  cat.addEventListener('pointerdown',event=>{
+    if(event.pointerType==='mouse'&&event.button!==0)return;
+    held=true;dragTime=Date.now();pet();
+  });
+  cat.addEventListener('pointermove',event=>{
+    if(!held||event.buttons===0&&event.pointerType==='mouse')return;
+    if(Date.now()-dragTime>330){dragTime=Date.now();pet();}
+  });
+  for(const type of ['pointerup','pointercancel','pointerleave']){
+    cat.addEventListener(type,()=>{held=false;});
+  }
+  // Native button keyboard activation fires a click with detail=0.
+  cat.addEventListener('click',event=>{if(event.detail===0)pet();});
+  function blink(){
+    if(!cat.classList.contains('pet')){
+      cat.classList.add('blink');
+      window.setTimeout(()=>cat.classList.remove('blink'),165);
+    }
+    blinkTimer=window.setTimeout(blink,2700+Math.random()*2400);
+  }
+  blinkTimer=window.setTimeout(blink,2100);
+  window.addEventListener('pagehide',()=>{clearTimeout(blinkTimer);clearTimeout(petTimer);});
+})();
+</script>
+</body>
+</html>
